@@ -1,13 +1,14 @@
 import * as React from 'react'
 
+import { brand } from '../../../shared/brand'
 import { cn } from '@/lib/utils'
 import { Logo } from '../Logo'
 
-/** Logo + "Doop", the lockup used in headers, the auth card and the footer. */
+/** Logo plus the configured product name. Headers, the auth card and the footer. */
 function Wordmark({
   size = 'md',
   className,
-  children = 'Doop',
+  children,
   ...props
 }: React.ComponentProps<'span'> & { size?: 'sm' | 'md' }) {
   return (
@@ -21,7 +22,7 @@ function Wordmark({
       {...props}
     >
       <Logo className={size === 'sm' ? 'size-[26px]' : 'size-[30px]'} />
-      {children}
+      {children ?? brand.name}
     </span>
   )
 }

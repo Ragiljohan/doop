@@ -8,7 +8,6 @@ import { clearElementId, elementIdAt, elementName, setElementName } from './laye
 import { elementIdSelector } from '../../shared/elementId'
 import { useStore } from './store'
 import { posthog } from './posthog'
-
 /** Local undo/redo for this client's own frame edits. Undo re-issues the
  *  inverse through the normal API, so every collaborator sees it live —
  *  remote actors' work is never undone from here. */
@@ -182,7 +181,11 @@ export async function saveLayerName(frameId: string, selector: string, name: str
   if (html === null) throw new Error('Layer removed')
   const started = epoch
   store.patchFrameLocal(frameId, { html })
-  const mirrored = requestFrame(frameId, 'doop:rename', { selector, name, ...(stamping ? { elementId: stamp } : {}) })
+  const mirrored = requestFrame(frameId, `doop:rename`, {
+    selector,
+    name,
+    ...(stamping ? { elementId: stamp } : {}),
+  })
   try {
     await api.updateFrame(frameId, { html })
     await mirrored
@@ -200,7 +203,11 @@ export async function saveLayerName(frameId: string, selector: string, name: str
       const rollback = named !== null && stamping ? clearElementId(named, selector) : named
       if (rollback !== null) {
         s.patchFrameLocal(frameId, { html: rollback })
-        await requestFrame(frameId, 'doop:rename', { selector, name: before, ...(stamping ? { elementId: null } : {}) })
+        await requestFrame(frameId, `doop:rename`, {
+          selector,
+          name: before,
+          ...(stamping ? { elementId: null } : {}),
+        })
       }
     }
     throw err

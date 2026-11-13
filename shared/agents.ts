@@ -1,3 +1,4 @@
+import { brand } from './brand'
 /**
  * The resident design team. Every board card names one or more of these
  * roles; the card walks them in order, one stage at a time.
@@ -28,7 +29,7 @@ export interface AgentRole {
 export const AGENT_ROLES: AgentRole[] = [
   {
     id: 'doop',
-    name: 'Doop',
+    name: brand.name,
     color: '#E8432E',
     blurb: 'Generalist designer — makes the thing',
     brief:
@@ -89,7 +90,7 @@ export const DEFAULT_ROLE_ID = 'doop'
 
 /** Ready-made pipelines for the board's compose box. */
 export const PIPELINE_PRESETS: { id: string; label: string; roles: string[] }[] = [
-  { id: 'solo', label: 'Just Doop', roles: ['doop'] },
+  { id: 'solo', label: `Just ${brand.name}`, roles: ['doop'] },
   { id: 'ship', label: 'Design → polish', roles: ['doop', 'polish'] },
   { id: 'full', label: 'Full pipeline', roles: ['doop', 'copy', 'brand', 'a11y', 'polish'] },
   { id: 'audit', label: 'Review only', roles: ['ux', 'brand', 'a11y'] },

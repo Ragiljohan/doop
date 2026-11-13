@@ -1,7 +1,6 @@
 import recorderUrl from 'posthog-js/dist/recorder.js?url'
 import type record from 'posthog-js/dist/recorder'
 import type { serializedNodeWithId } from 'posthog-js/dist/rrweb-types'
-
 type Recorder = typeof record
 type Options = NonNullable<Parameters<Recorder>[0]>
 
@@ -31,7 +30,7 @@ export function installFrameReplay(
   const frames = () => document.querySelectorAll<HTMLIFrameElement>('iframe[data-doop-frame]')
   function send(frame: HTMLIFrameElement, snapshot = false) {
     frame.contentWindow?.postMessage(
-      { type: 'doop:replay', options, generation, snapshot, url: new URL(recorderUrl, location.href).href },
+      { type: `doop:replay`, options, generation, snapshot, url: new URL(recorderUrl, location.href).href },
       '*', // sandboxed srcdoc has an opaque origin
     )
   }
@@ -39,7 +38,7 @@ export function installFrameReplay(
     frames().forEach((frame) => send(frame, snapshot))
   }
   window.addEventListener('message', (event) => {
-    if (event.data?.type !== 'doop:frame-ready') return
+    if (event.data?.type !== `doop:frame-ready`) return
     const frame = Array.from(frames()).find((frame) => frame.contentWindow === event.source)
     if (frame) send(frame)
   })

@@ -12,6 +12,7 @@
  */
 
 import { decodeQuotes, usesFamily, type CustomFont } from './fonts.ts'
+import { brand } from './brand'
 
 export const WEB_FONT_LINK_ATTR = 'data-doop-webfonts'
 
@@ -177,7 +178,7 @@ export function webFontsBrief(): string {
   )
   return (
     `Hosted fonts, which render identically for every viewer and in every export (${groups.join('; ')}): ` +
-    `use one by naming it in CSS (font-family: "Family", sans-serif); Doop links it from Google Fonts by itself, ` +
+    `use one by naming it in CSS (font-family: "Family", sans-serif); ${brand.name} links it from Google Fonts by itself, ` +
     `so do not add the <link> yourself and keep the <link data-doop-webfonts> it adds. OS fonts such as Georgia, ` +
     `Verdana or Helvetica render differently on each machine and in exports; prefer these or the canvas's custom fonts.`
   )

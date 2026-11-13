@@ -283,7 +283,7 @@ it('surfaces Slack membership errors without exposing upstream response text', a
   const a = await workflow()
   approve()
   await tickWorkflows()
-  expect((await runs(a.id))[0]!.error).toBe('Check the Slack channel ID and invite @Doop to that channel.')
+  expect((await runs(a.id))[0]!.error).toBe('Check the Slack channel ID and invite @Design to that channel.')
 })
 
 it('does not replay an interrupted external step after its lease expires', async () => {

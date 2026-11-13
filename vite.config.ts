@@ -1,7 +1,39 @@
+import { readFileSync } from 'node:fs'
 import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { fileURLToPath } from 'node:url'
+
+const brand = JSON.parse(
+  readFileSync(fileURLToPath(new URL('./brand/brand.config.json', import.meta.url)), 'utf8'),
+) as {
+  name: string
+  description: string
+  primaryColor: string
+  publicUrl: string
+}
+
+function escapeHtml(value: string) {
+  return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+}
+
+/** Fills index.html from brand/brand.config.json so the document title is not a
+ *  second copy of the product name. */
+function brandHtml() {
+  const origin = brand.publicUrl.replace(/\/$/, '')
+  const replacements: Record<string, string> = {
+    '%BRAND_TITLE%': escapeHtml(brand.name),
+    '%BRAND_DESCRIPTION%': escapeHtml(brand.description),
+    '%BRAND_THEME%': escapeHtml(brand.primaryColor),
+    '%BRAND_OG_IMAGE%': escapeHtml(origin ? `${origin}/og.png` : '/og.png'),
+  }
+  return {
+    name: 'brand-html',
+    transformIndexHtml(html: string) {
+      return html.replace(/%BRAND_(?:TITLE|DESCRIPTION|THEME|OG_IMAGE)%/g, (token) => replacements[token] ?? token)
+    },
+  }
+}
 
 /* Dev ports. The defaults are the only ones anyone normally needs; the env
    overrides exist so a second worktree can run its own pair without fighting
@@ -18,7 +50,7 @@ const clipboardTests = [
 ]
 
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss(), brandHtml()],
   test: {
     /* agent worktrees live under .claude/ inside the repo; their copies of the
        suite must not run as ours */

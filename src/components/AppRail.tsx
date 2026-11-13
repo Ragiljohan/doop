@@ -11,6 +11,7 @@ import { useT } from '../lib/i18n'
 import { cn } from '@/lib/utils'
 import { AgentIcon } from './AgentIcon'
 import { AccountMenu } from './DashShell'
+import { BrandCredit } from './ui/brand-credit'
 import { CanvasSearchModal } from './CanvasSearchModal'
 import { ConnectModal } from './ConnectModal'
 import { DashNavItem, DashSectionLabel, DashSidebar, DashSidebarBrand } from './ui/dash'
@@ -534,9 +535,12 @@ export function AppRail({
         </DashNavItem>
       </div>
 
-      <div className="mt-auto flex items-center gap-2.5 px-1 pt-4">
-        <AccountMenu face side="top" align="start" />
-        <AccountName />
+      <div className="mt-auto flex flex-col gap-3 px-1 pt-4">
+        <BrandCredit />
+        <div className="flex items-center gap-2.5">
+          <AccountMenu face side="top" align="start" />
+          <AccountName />
+        </div>
       </div>
     </div>
   )

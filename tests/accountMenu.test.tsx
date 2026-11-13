@@ -36,15 +36,16 @@ async function openMenu(): Promise<Map<string, string | null>> {
   return new Map(links.map((a) => [a.textContent?.trim() ?? '', a.getAttribute('href')]))
 }
 
-it('links the desktop download and the website from the account menu', async () => {
+it('links the source from the account menu and hides empty marketing links', async () => {
   const links = await openMenu()
-  expect(links.get('Get desktop app')).toBe('https://doop.design/download')
-  expect(links.get('Doop website')).toBe('https://doop.design/?site')
+  expect(links.get('Source')).toBe('https://github.com/Ragiljohan/doop')
+  expect(links.has('Get desktop app')).toBe(false)
+  expect(links.has('Design website')).toBe(false)
 })
 
 it('offers no download inside the desktop app', async () => {
   shell.desktop = true
   const links = await openMenu()
   expect(links.has('Get desktop app')).toBe(false)
-  expect(links.get('Doop website')).toBe('https://doop.design/?site')
+  expect(links.get('Source')).toBe('https://github.com/Ragiljohan/doop')
 })

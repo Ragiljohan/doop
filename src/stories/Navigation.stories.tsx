@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button'
 import { ListItem, ListMeta, ListRow, ListSection, ListSummary, ListTitle } from '@/components/ui/list'
 import { DashNavItem, DashSectionLabel, DashSidebarBrand } from '@/components/ui/dash'
 import { Dot } from '@/components/ui/dot'
+import { brand } from '../../shared/brand'
 import {
   BuildingIcon,
   ChevronDownIcon,
@@ -174,7 +175,8 @@ function SidebarDemo() {
           active={pane === 'ws'}
           onClick={() => setPane('ws')}
         >
-          Doop UI
+          {`${brand.name} UI
+        `}
         </DashNavItem>
         <DashSectionLabel density="rail">Agents</DashSectionLabel>
         <DashNavItem

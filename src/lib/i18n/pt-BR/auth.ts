@@ -1,8 +1,8 @@
 import type { Catalog } from '..'
 
 export const auth: Catalog['auth'] = {
-  networkError: 'Não foi possível acessar o doop — verifique sua conexão e tente de novo.',
-  unreachable: 'Não foi possível acessar o doop — ele pode estar reiniciando. Tente de novo em instantes.',
+  networkError: 'Não foi possível acessar o %%APP%% — verifique sua conexão e tente de novo.',
+  unreachable: 'Não foi possível acessar o %%APP%% — ele pode estar reiniciando. Tente de novo em instantes.',
   somethingWentWrong: 'Algo deu errado',
   somethingWentWrongTitle: 'Algo deu errado.',
 
@@ -42,17 +42,17 @@ export const auth: Catalog['auth'] = {
   resendVerification: 'Reenviar e-mail de verificação',
 
   ssoAccountNotLinked:
-    'Esse e-mail já tem uma conta no doop que não pôde ser vinculada automaticamente — entre com e-mail e senha.',
+    'Esse e-mail já tem uma conta no %%APP%% que não pôde ser vinculada automaticamente — entre com e-mail e senha.',
   ssoEmailMismatch: 'O e-mail com que você entrou não corresponde à conta de onde você começou — tente de novo.',
   ssoEmailMissing:
-    'Seu provedor de identidade não compartilhou um endereço de e-mail — o doop precisa de um para você entrar.',
+    'Seu provedor de identidade não compartilhou um endereço de e-mail — o %%APP%% precisa de um para você entrar.',
   ssoDesktopHandoff: 'Esse link de acesso expirou — comece de novo e conclua no navegador em poucos minutos.',
   ssoFailed: 'Não foi possível entrar — tente de novo ou use e-mail e senha.',
   startFailed: 'Não foi possível iniciar o acesso — tente de novo ou use e-mail e senha.',
   redirectingTo: 'Levando você para {provider}…',
   signInAnotherWay: 'Entrar de outra forma',
   signupDisabled: 'O cadastro com e-mail e senha está desligado nesta instância.',
-  browserSignInNotice: 'Conclua o acesso no navegador — o doop conecta você aqui assim que você voltar.',
+  browserSignInNotice: 'Conclua o acesso no navegador — o %%APP%% conecta você aqui assim que você voltar.',
   verificationSent: 'E-mail de verificação enviado — confira sua caixa de entrada.',
   resetLinkSent: 'Se existir uma conta com esse e-mail, um link de redefinição já está a caminho.',
   resetLinkInvalid: 'Este link de redefinição é inválido ou expirou — solicite um novo.',
@@ -74,22 +74,23 @@ export const auth: Catalog['auth'] = {
   connecting: 'Conectando…',
   connect: 'Conectar',
 
-  desktopLinkIncomplete: 'Este link de acesso está incompleto — volte ao app do doop e tente de novo.',
-  desktopStartFailed: 'Não foi possível iniciar o acesso — volte ao app do doop e tente de novo.',
+  desktopLinkIncomplete: 'Este link de acesso está incompleto — volte ao app do %%APP%% e tente de novo.',
+  desktopStartFailed: 'Não foi possível iniciar o acesso — volte ao app do %%APP%% e tente de novo.',
   desktopSigningIn: 'Entrando…',
   desktopToProvider: 'Levando você ao seu provedor de identidade para o app do doop.',
   desktopSignedIn: 'Você entrou.',
   desktopHandoffFailed: 'Não foi possível passar o acesso para o app do doop. Volte ao app e tente de novo.',
-  desktopSendingBack: 'Levando você de volta ao app do doop… Você pode fechar esta aba depois.',
-  openDoop: 'Abrir o doop',
+  desktopSendingBack: 'Levando você de volta ao app do %%APP%%… Você pode fechar esta aba depois.',
+  openDoop: 'Abrir o %%APP%%',
   desktopConnectTitle: 'De volta ao app do doop.',
-  desktopConnectBody: 'O doop conclui a conexão no app, para a conta conectada lá. Você pode fechar esta aba depois.',
+  desktopConnectBody:
+    'O %%APP%% conclui a conexão no app, para a conta conectada lá. Você pode fechar esta aba depois.',
   desktopConnectFailed: 'Não foi possível passar a conexão para o app do doop. Volte ao app e tente de novo.',
 
   serverSettings: 'Configurações do servidor',
-  serverTitle: 'Servidor do Doop',
-  serverLede: 'Este app está conectado a {host}. Informe outro endereço para usar um servidor Doop auto-hospedado.',
-  serverLedeLoading: 'Informe o endereço do servidor Doop que este app deve usar.',
+  serverTitle: 'Servidor do %%APP%%',
+  serverLede: 'Este app está conectado a {host}. Informe outro endereço para usar um servidor %%APP%% auto-hospedado.',
+  serverLedeLoading: 'Informe o endereço do servidor %%APP%% que este app deve usar.',
   serverAddress: 'Endereço do servidor',
   serverHint: 'O app verifica o servidor, pede sua confirmação e reinicia.',
   serverConnect: 'Conectar',

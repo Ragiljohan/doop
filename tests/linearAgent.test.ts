@@ -177,7 +177,7 @@ describe('Linear agent installation', () => {
   it('does not transfer installation or billing to another Doop user', async () => {
     const { url } = await startInstall('stranger')
     await expect(finishInstall('stranger', new URL(url).searchParams.get('state')!, 'code')).rejects.toThrow(
-      'already has a Doop installer',
+      'already has a Design installer',
     )
     expect((await db.select().from(linearInstallations))[0]?.userId).toBe(userId)
   })

@@ -1,3 +1,4 @@
+import { brand } from './brand'
 /**
  * Custom fonts: font files uploaded to a library (a workspace's, or a
  * person's own for their personal canvases) and used in frames by family
@@ -169,9 +170,9 @@ export function libraryBrief(library: readonly CustomFont[]): string {
     .join('; ')
   return (
     `This canvas has custom fonts uploaded by its team: ${families}. Prefer them for type — they are the brand's. ` +
-    `Use one by naming it in CSS (font-family: "Family", sans-serif — a custom property works too); Doop adds the ` +
+    `Use one by naming it in CSS (font-family: "Family", sans-serif — a custom property works too); ${brand.name} adds the ` +
     `@font-face rules to the frame by itself. Do not load these families from Google Fonts or write their ` +
-    `@font-face yourself, and keep the <style data-doop-fonts> block Doop adds. Stick to the weights listed.`
+    `@font-face yourself, and keep the <style data-doop-fonts> block ${brand.name} adds. Stick to the weights listed.`
   )
 }
 

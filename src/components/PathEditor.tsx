@@ -19,7 +19,6 @@ import { multiply, nearestT, segments, splitSegment, subpathsData } from '../lib
 import { frameTurnMatrix } from '../../shared/frameRotation'
 import { useStore } from '../lib/store'
 import { useT } from '../lib/i18n'
-
 /** One anchor of the path, addressed by its subpath and its place in it;
  *  `flat` numbers every anchor of the path in order, for the markup. */
 interface Anchor {
@@ -84,7 +83,7 @@ export function PathEditor({
       const current = ++revision.current
       const latest = useStore.getState().canvas?.frames.find((f) => f.id === requested.id)
       if (!latest) return
-      await requestFrame(latest.id, 'doop:html', { html: latest.html })
+      await requestFrame(latest.id, `doop:html`, { html: latest.html })
       const next = await loadPathEdit(latest, { selector: initial.selector })
       if (!alive.current || current !== revision.current) return
       if (!next) return onClose()
@@ -97,11 +96,11 @@ export function PathEditor({
 
   useEffect(() => {
     alive.current = true
-    void requestFrame(frame.id, 'doop:path-editing', { selector: initial.selector })
+    void requestFrame(frame.id, `doop:path-editing`, { selector: initial.selector })
     return () => {
       alive.current = false
       cleanup.current?.()
-      void requestFrame(frame.id, 'doop:path-editing', { selector: null })
+      void requestFrame(frame.id, `doop:path-editing`, { selector: null })
     }
   }, [frame.id, initial.selector])
 

@@ -14,7 +14,6 @@ import {
 import { recordUpdates } from './history'
 import { requestFrame } from './frameBridge'
 import { useStore } from './store'
-
 export type PathMatrix = Matrix
 export interface EditablePath {
   /** Every stroke of the path: a compound path (a letter with a hole) has several. */
@@ -38,7 +37,7 @@ export function shapePath(svg: Element): SVGPathElement | null {
 }
 
 export async function loadPathEdit(frame: Frame, where: Record<string, unknown>): Promise<PathEditSource | null> {
-  const reply = await requestFrame(frame.id, 'doop:path', where)
+  const reply = await requestFrame(frame.id, `doop:path`, where)
   const hit = reply?.hit as (Omit<PathEditSource, 'subpaths' | 'markup'> & { data: string }) | undefined
   if (!hit) return null
   const parsed = parseEditablePath(hit.data)

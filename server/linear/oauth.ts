@@ -5,6 +5,7 @@ import { z } from 'zod'
 import { db } from '../db/index.ts'
 import { linearInstallations, linearOAuthStates } from '../db/schema.ts'
 import { LinearError, linearQuery } from './client.ts'
+import { brand } from '../../shared/brand.ts'
 
 export type Installation = typeof linearInstallations.$inferSelect
 export const publicOrigin = () => env.BETTER_AUTH_URL
@@ -116,7 +117,10 @@ export async function finishInstall(userId: string, state: string, code: string)
     })
     .returning()
   if (!rows.length)
-    throw new LinearError('This Linear workspace already has a Doop installer. Ask them to disconnect it first.', 409)
+    throw new LinearError(
+      `This Linear workspace already has a ${brand.name} installer. Ask them to disconnect it first.`,
+      409,
+    )
 }
 
 export async function getInstallation(userId: string) {

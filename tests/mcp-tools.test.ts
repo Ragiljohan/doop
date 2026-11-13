@@ -22,7 +22,7 @@ describe('MCP server info', () => {
     await client.connect(clientTransport)
 
     try {
-      expect(client.getServerVersion()).toEqual({ name: 'doop-canvas', version: packageJson.version })
+      expect(client.getServerVersion()).toEqual({ name: 'design-canvas', version: packageJson.version })
     } finally {
       await client.close()
     }

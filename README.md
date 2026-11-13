@@ -721,6 +721,77 @@ This is the short list a self-hoster usually touches:
 | iOS push           | `DOOP_APNS_TEAM_ID`, `DOOP_APNS_KEY_ID`, `DOOP_APNS_PRIVATE_KEY`, `DOOP_APNS_BUNDLE_ID`                                                                              | No Live Activity pushes; the app polls                                             |
 | Gemini cloud pilot | `DOOP_GEMINI_CLOUD_WORKERS` ([pilot guide](docs/gemini-cloud-pilot.md))                                                                                              | Off                                                                                |
 
+## White-label / update flow
+
+The name, colors, mail sender and links live in [`brand/brand.config.json`](brand/brand.config.json). The logo, the small mark, the favicon and the social image live in [`brand/assets/`](brand/assets/). `bun run apply-brand` copies those files into `public/` and points the product-name strings in the served app at that config. Run it after any change to the name or the logo. Running it again changes nothing.
+
+`bun run brand:check` fails when a page, an email or an API string still shows the upstream product name. The license, copyright headers, [`NOTICE`](NOTICE) and the wire-protocol ids stay as they are: `data-doop-*`, `X-Doop-*`, and the role id `doop`.
+
+These trees are not rebranded. The web app does not serve them:
+
+- `desktop/`
+- `ios/`
+- `chrome-extension/`
+- `claude-extension/`
+- `chatgpt-plugin/`
+- `cursor-plugin/`
+
+### Pull upstream
+
+```bash
+git remote add upstream https://github.com/kgoedecke/doop.git
+git fetch upstream
+git rebase upstream/main
+bun install
+bun run apply-brand
+bun run brand:check
+bun run build
+```
+
+`git merge upstream/main` works in place of the rebase.
+
+### Change the name or the logo
+
+Edit `brand/brand.config.json` and replace the files in `brand/assets/`. Then:
+
+```bash
+bun run apply-brand
+bun run brand:check
+```
+
+The default name is Design, and the default description is "Design workspace". Set `publicUrl` once the host is chosen. The Docker image runs `apply-brand` before the client build. The public host is not decided. One example, behind a reverse proxy:
+
+```bash
+BETTER_AUTH_URL=https://design.ragil.work \
+EMAIL_FROM="Design <no-reply@design.ragil.work>" \
+BETTER_AUTH_SECRET=$(openssl rand -hex 32) \
+docker compose up -d --build
+```
+
+See [`brand/self-host.env.example`](brand/self-host.env.example).
+
+### Try it from an existing macOS clone
+
+When `~/Work/Freelance/doop` still tracks the upstream repository:
+
+```bash
+cd ~/Work/Freelance/doop
+git remote add fork https://github.com/Ragiljohan/doop.git
+git fetch fork
+git checkout ragil-brand
+bun install
+bun run apply-brand
+bun run dev
+```
+
+Then open http://localhost:4300 and check:
+
+- the tab title is Design and the favicon is the plain geometric mark
+- the sign-in card shows Design, with a Source link under the card
+- the home rail shows the same name and a Source link
+- a shared canvas (`/c/<id>` while signed out) shows Source on the access banner
+- the web app listens on port 4300 and the API on port 4400
+
 ## Connect an AI agent
 
 The MCP endpoint (streamable HTTP, stateless) is at:

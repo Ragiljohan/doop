@@ -3,6 +3,7 @@ import { createHmac, timingSafeEqual } from 'node:crypto'
 import express from 'express'
 import { z } from 'zod'
 import { disconnectTeam, receiveRequest, wakeSlack } from './jobs.ts'
+import { brand } from '../../shared/brand.ts'
 
 const SIGNATURE_WINDOW_S = 5 * 60
 
@@ -92,7 +93,7 @@ export function slackWebhookRouter() {
           text: parsed.data.text,
           responseUrl: parsed.data.response_url,
         })
-        res.json({ response_type: 'in_channel', text: 'Doop is on it — designing from your brief.' })
+        res.json({ response_type: 'in_channel', text: `${brand.name} is on it — designing from your brief.` })
         wakeSlack()
         return
       }

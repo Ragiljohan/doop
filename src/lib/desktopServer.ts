@@ -1,3 +1,4 @@
+import { brand } from '../../shared/brand'
 /**
  * Which Doop server the desktop shell opens (desktop/src-tauri/src/server.rs).
  * The sign-in screen's server settings read it with `server_status` and change
@@ -26,7 +27,7 @@ export const canChooseServer = () => bridge.__DOOP_SERVER_CHOOSE__ === true && !
 
 function invoke<T>(command: string, args?: Record<string, unknown>): Promise<T> {
   const call = canChooseServer() ? bridge.__TAURI__?.core?.invoke : undefined
-  if (!call) return Promise.reject(new Error('Update the Doop desktop app to change its server.'))
+  if (!call) return Promise.reject(new Error(`Update the ${brand.name} desktop app to change its server.`))
   return call<T>(command, args)
 }
 

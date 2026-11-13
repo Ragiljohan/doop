@@ -10,6 +10,7 @@ import { IconButton } from './ui/icon-button'
 import { CheckIcon, CircleIcon, SparkIcon, XIcon } from './ui/icons'
 import { ConnectModal } from './ConnectModal'
 import { useT } from '../lib/i18n'
+import { brand } from '../../shared/brand'
 
 const obHint = 'text-body text-ink-soft'
 /* the copy-this-command affordance inside a step */
@@ -24,7 +25,7 @@ const obCopy =
  * checked across canvases and sessions.
  */
 
-const LS_KEY = 'doop:onboarding'
+const LS_KEY = `doop:onboarding`
 
 interface Progress {
   dismissed?: boolean
@@ -94,7 +95,7 @@ export function Onboarding({ canvasId }: { canvasId: string }) {
   /* the same one-line prompt the Connect AI modal hands out: the MCP server
      ships its own instructions on connect, so the prompt only needs to name
      the canvas */
-  const prompt = `Work on Doop canvas ${canvasId}. Start with get_guide({ topic: "doop-instructions" }) and follow it.`
+  const prompt = `Work on ${brand.name} canvas ${canvasId}. Start with get_guide({ topic: "doop-instructions" }) and follow it.`
 
   const checklist = (
     <>

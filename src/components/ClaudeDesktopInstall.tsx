@@ -4,6 +4,7 @@ import { posthog } from '../lib/posthog'
 import { Button } from './ui/button'
 import { InstallBlock } from './ui/install-block'
 import { useT } from '../lib/i18n'
+import { brand } from '../../shared/brand'
 
 export function ClaudeDesktopInstall({ mcpUrl }: { mcpUrl: string }) {
   const t = useT()
@@ -46,8 +47,8 @@ export function ClaudeDesktopInstall({ mcpUrl }: { mcpUrl: string }) {
           <a className="underline underline-offset-2" href="/claude-extension/doop.mcpb" download="doop.mcpb">
             {t('workspace.downloadExtension')}
           </a>
-          {t('workspace.claudeManualOpen')} <strong>Doop server URL</strong> {t('workspace.claudeManualTo')}{' '}
-          <code className="break-all">{mcpUrl}</code>
+          {t('workspace.claudeManualOpen')} <strong>{`${brand.name} server URL`}</strong>{' '}
+          {t('workspace.claudeManualTo')} <code className="break-all">{mcpUrl}</code>
           {t('workspace.claudeManualFallback')}{' '}
           <strong>Settings → Extensions → Advanced settings → Install Extension</strong>.
         </p>

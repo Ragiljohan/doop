@@ -3,7 +3,6 @@ import { FRAME_DROP_RUNTIME } from './frameDropRuntime'
 import { FRAME_PROTO_RUNTIME } from './frameProtoRuntime'
 import { FRAME_TEXT_RUNTIME } from './frameTextRuntime'
 import { CANVAS_MOD_CHORDS } from './keys'
-
 /**
  * Bootstrap document loaded once per frame iframe. The parent posts HTML in
  * via postMessage and the runtime morphs the live DOM to match — only changed

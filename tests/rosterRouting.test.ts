@@ -110,6 +110,6 @@ it('routes a Kimi Code plan to the membership endpoint, naming Doop as the clien
   expect(await model!.run(request)).toMatchObject({ stop_reason: 'end_turn' })
   const [url, init] = fetchSpy.mock.calls[0]!
   expect(String(url)).toBe('https://api.kimi.ai/coding/v1/chat/completions')
-  expect((init!.headers as Record<string, string>)['User-Agent']).toMatch(/^Doop\/\d+\.\d+\.\d+/)
+  expect((init!.headers as Record<string, string>)['User-Agent']).toMatch(/^Design\/\d+\.\d+\.\d+/)
   expect(JSON.parse(String(init!.body))).toMatchObject({ model: 'k3.1-pro' })
 })

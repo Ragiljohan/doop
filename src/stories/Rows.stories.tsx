@@ -11,6 +11,7 @@ import { PersonRow } from '@/components/ui/list'
 import { SelectionBar, SelectionBarAction } from '@/components/ui/selection-bar'
 import { Step, Steps } from '@/components/ui/steps'
 import { colorFor } from '../../shared/types'
+import { brand } from '../../shared/brand'
 
 /** The small rows screens kept drawing by hand: a person on a line, the
  *  "N of M selected" bar over a checklist, and a numbered how-to. */
@@ -28,7 +29,7 @@ export const People: Story = {
         className="py-1.5"
         avatar={<Avatar name="Kevin Goedecke" color={colorFor('kevin')} size={28} />}
         name="Kevin Goedecke (you)"
-        detail="kevin@doop.design"
+        detail={`kevin@${brand.publicHost}`}
         trailing={<span className="text-label text-ink-faint">Owner</span>}
       />
       <PersonRow
@@ -52,7 +53,7 @@ export const People: Story = {
             <BuildingIcon width={14} height={14} aria-hidden />
           </span>
         }
-        name="Everyone in Doop"
+        name={`Everyone in ${brand.name}`}
         detail="12 people"
         trailing={<span className="text-label text-ink-faint">Can edit</span>}
       />
@@ -112,7 +113,7 @@ export const HowTo: Story = {
   render: () => (
     <Steps className="max-w-[420px]">
       <Step>Copy your frames below.</Step>
-      <Step>In Figma, run Plugins → “Doop — Editable import”.</Step>
+      <Step>{`In Figma, run Plugins → “${brand.name} — Editable import”.`}</Step>
       <Step>Paste, then add to your current page.</Step>
     </Steps>
   ),

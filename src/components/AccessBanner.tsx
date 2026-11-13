@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { brand } from '../../shared/brand'
 import { useStore, roleOf } from '../lib/store'
 import { useT } from '../lib/i18n'
 import { cn } from '../lib/utils'
@@ -33,6 +34,14 @@ export function AccessBanner({
     return (
       <div role="status" className={cn(bannerClass, className)}>
         <span className="min-w-0">{t('canvas.guestBanner')}</span>
+        <a
+          className="flex-none text-caption text-ink-soft underline underline-offset-2"
+          href={brand.links.source}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {t('shell.source')}
+        </a>
         <span className="flex flex-none items-center gap-1.5">
           <Button size="sm" onClick={onSignIn}>
             {t('auth.signIn')}

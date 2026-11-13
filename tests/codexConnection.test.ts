@@ -20,15 +20,13 @@ it.each(['https://doop.design', 'https://design.example.com:8443', 'http://local
   },
 )
 
-it('accepts the production www alias and strips unsupported handoff parameters', () => {
+it('strips unsupported handoff parameters and ignores a www host that is not the configured public URL', () => {
   const target = codexSetupTarget(
     `${codexDesktopLink('https://www.doop.design')}\u0026command=evil\u0026canvas=../auth`,
   )!
   expect(target).not.toContain('command')
   expect(target).not.toContain('canvas')
-  expect(parseCodexSetup(new URL(target, 'https://doop.design').search, 'https://doop.design')).toEqual({
-    canvasId: undefined,
-  })
+  expect(parseCodexSetup(new URL(target, 'https://doop.design').search, 'https://doop.design')).toBeNull()
 })
 
 it.each([
@@ -61,6 +59,6 @@ it('does not call unknown IPC commands in older shells', async () => {
   const invoke = vi.fn()
   vi.stubGlobal('__TAURI__', { core: { invoke } })
   expect(canAddToCodex()).toBe(false)
-  await expect(addToCodex()).rejects.toThrow('Update Doop Desktop')
+  await expect(addToCodex()).rejects.toThrow('Update Design Desktop')
   expect(invoke).not.toHaveBeenCalled()
 })

@@ -32,6 +32,7 @@ import {
 import { MenuHint } from '@/components/ui/menu'
 import { MenuButton } from '@/components/ui/menu-button'
 import { CopyIcon, ShareIcon, TrashIcon } from '@/components/ui/icons'
+import { brand } from '../../shared/brand'
 
 const meta = { title: 'Primitives/Overlays' } satisfies Meta
 export default meta
@@ -99,7 +100,7 @@ export const SheetStory: Story = {
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Getting started</SheetTitle>
-          <SheetDescription>Connect your own agent, or give the Doop Agent a task.</SheetDescription>
+          <SheetDescription>{`Connect your own agent, or give the ${brand.name} Agent a task.`}</SheetDescription>
         </SheetHeader>
       </SheetContent>
     </Sheet>
@@ -164,7 +165,7 @@ function DropdownDemo() {
           <MenuButton aria-label="Model">Model</MenuButton>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" width="lg">
-          <DropdownMenuCaption>Doop Agent model</DropdownMenuCaption>
+          <DropdownMenuCaption>{`${brand.name} Agent model`}</DropdownMenuCaption>
           <DropdownMenuItem description="The everyday workhorse. A good default for design work">
             GPT-5.6 Terra
           </DropdownMenuItem>

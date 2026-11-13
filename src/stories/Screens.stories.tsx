@@ -5,6 +5,7 @@ import { Callout } from '@/components/ui/callout'
 import { CodeBlock } from '@/components/ui/code-block'
 import { Disclosure } from '@/components/ui/collapsible'
 import { InstallBlock } from '@/components/ui/install-block'
+import { brand } from '../../shared/brand'
 
 /**
  * The pieces whole screens and flows are built from: the signed-out card
@@ -36,7 +37,8 @@ export const SignedOutCard: Story = {
       <AuthScreen className="h-auto min-h-0">
         <AuthCard title="Something went wrong.">
           <Callout tone="error">
-            Could not hand the sign-in over to the doop app. Go back to the app and try again.
+            {`Could not hand the sign-in over to the ${brand.name} app. Go back to the app and try again.
+          `}
           </Callout>
         </AuthCard>
       </AuthScreen>
@@ -56,12 +58,12 @@ export const Install: Story = {
     <div className="flex max-w-[420px] flex-col gap-8">
       <InstallBlock
         action={<Button variant="solid">Add to Codex</Button>}
-        manual={<CodeBlock text="codex mcp add doop --url https://doop.design/mcp" />}
+        manual={<CodeBlock text={`codex mcp add ${brand.name} --url ${brand.publicUrl}/mcp`} />}
       />
       <InstallBlock
         action={<Button variant="solid">Added to Codex</Button>}
-        status="Doop is configured. Open a new Codex chat, then sign in to Doop when prompted."
-        manual={<CodeBlock text="codex mcp add doop --url https://doop.design/mcp" />}
+        status={`${brand.name} is configured. Open a new Codex chat, then sign in to ${brand.name} when prompted.`}
+        manual={<CodeBlock text={`codex mcp add ${brand.name} --url ${brand.publicUrl}/mcp`} />}
       />
       <InstallBlock
         action={<Button variant="solid">Add to Claude</Button>}

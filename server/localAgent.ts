@@ -1,3 +1,4 @@
+import { brand } from '../shared/brand.ts'
 import { CLAUDE_EFFORTS, isClaudeModel } from '../shared/localAgent.ts'
 import { Router, type Request, type Response } from 'express'
 import { Server } from '@modelcontextprotocol/sdk/server/index.js'
@@ -103,7 +104,7 @@ export async function handleLocalAgentMcp(req: Request, res: Response) {
     res.status(405).end()
     return
   }
-  const server = new Server({ name: 'doop', version: '1.0.0' }, { capabilities: { tools: {} } })
+  const server = new Server({ name: brand.mcpName, version: '1.0.0' }, { capabilities: { tools: {} } })
   server.setRequestHandler(ListToolsRequestSchema, () => ({
     tools: run.request.tools.map((tool) => ({
       name: tool.name,

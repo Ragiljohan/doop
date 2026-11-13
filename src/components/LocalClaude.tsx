@@ -86,15 +86,17 @@ function DesktopOnlyClaudeRow({ active }: { active: boolean }) {
       name={t('models.claudePlan')}
       sub={active ? t('models.waitingDesktop') : t('models.desktopOnly')}
       action={
-        <a
-          className="inline-flex items-center gap-[6px] py-1 text-[12.5px] font-medium text-brand hover:underline"
-          href={DOWNLOAD_URL}
-          target="_blank"
-          rel="noreferrer"
-        >
-          <DownloadIcon width={14} height={14} strokeWidth={1.8} aria-hidden />
-          {t('models.downloadShort')}
-        </a>
+        DOWNLOAD_URL ? (
+          <a
+            className="inline-flex items-center gap-[6px] py-1 text-[12.5px] font-medium text-brand hover:underline"
+            href={DOWNLOAD_URL}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <DownloadIcon width={14} height={14} strokeWidth={1.8} aria-hidden />
+            {t('models.downloadShort')}
+          </a>
+        ) : undefined
       }
     />
   )

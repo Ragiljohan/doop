@@ -1,6 +1,7 @@
 import { randomBytes, randomUUID } from 'node:crypto'
 import type Anthropic from '@anthropic-ai/sdk'
 import type { LocalAgentJob, LocalAgentPreference, LocalAgentResult } from '../shared/localAgent.ts'
+import { brand } from '../shared/brand.ts'
 
 export interface LocalHarnessRequest {
   canvasId: string
@@ -152,7 +153,7 @@ function shellResult(result: LocalAgentResult): LocalAgentResult {
   if (result.success || !/^invalid model$/i.test(result.text.trim())) return result
   return {
     success: false,
-    text: 'The Doop desktop app on this device is too old for that model. Update it, or pick a pinned model id in Settings.',
+    text: `The ${brand.name} desktop app on this device is too old for that model. Update it, or pick a pinned model id in Settings.`,
   }
 }
 

@@ -1,7 +1,6 @@
 import { useSyncExternalStore } from 'react'
 import { DEFAULT_EXPORT_SCALE, parseExportScale } from '../../shared/exportScale'
 import type { FrameExportFormat } from './frameExport'
-
 /** The last image export picked: a density and a format, which the
  *  Inspector's Export group and the Export dialogs start from. */
 export interface ExportSettings {
@@ -11,7 +10,7 @@ export interface ExportSettings {
 
 /* Per browser, like the panel layout: someone who exports 3x posters
    wants 3x next time, on every canvas. */
-export const EXPORT_SETTINGS_STORAGE_KEY = 'doop:export-settings'
+export const EXPORT_SETTINGS_STORAGE_KEY = `doop:export-settings`
 
 const DEFAULTS: ExportSettings = { scale: DEFAULT_EXPORT_SCALE, format: 'png' }
 

@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/dash'
 import { CreditCardIcon, GearIcon, UsersIcon } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
+import { brand } from '../../shared/brand'
 
 const railIcon = { width: 14, height: 14, 'aria-hidden': true } as const
 
@@ -27,7 +28,7 @@ const now = Date.now()
 const canvases: CanvasMeta[] = [
   {
     id: 'c1',
-    name: 'Doop UI redesign',
+    name: `${brand.name} UI redesign`,
     ownerId: 'u1',
     createdAt: now - 864e5 * 9,
     updatedAt: now - 6e4,
@@ -37,7 +38,7 @@ const canvases: CanvasMeta[] = [
   },
   {
     id: 'c2',
-    name: 'doop.design website',
+    name: `${brand.publicHost} website`,
     ownerId: 'u1',
     createdAt: now - 864e5 * 4,
     updatedAt: now - 12e4,
@@ -61,7 +62,7 @@ const canvases: CanvasMeta[] = [
   },
 ]
 const workspaces: WorkspaceSummary[] = [
-  { id: 'w1', name: 'Doop UI', role: 'owner', active: true, plan: 'team', memberCount: 3 } as WorkspaceSummary,
+  { id: 'w1', name: `${brand.name} UI`, role: 'owner', active: true, plan: 'team', memberCount: 3 } as WorkspaceSummary,
 ]
 
 export const Rail: Story = {
@@ -93,7 +94,7 @@ export const RailWithGroup: Story = {
     <div className="h-[820px] overflow-hidden rounded-panel shadow-ring">
       <DashLayout className={cn(railLayout, 'h-full')}>
         <AppRail active="ws:w1" canvases={canvases} workspaces={workspaces} onScope={() => {}}>
-          <DashSectionLabel density="rail">Doop UI</DashSectionLabel>
+          <DashSectionLabel density="rail">{`${brand.name} UI`}</DashSectionLabel>
           <nav className="flex flex-col gap-0.5">
             <DashNavItem density="rail" icon={<UsersIcon {...railIcon} />} active>
               People
@@ -109,7 +110,7 @@ export const RailWithGroup: Story = {
         <DashMain className="[background:var(--paper)]">
           <DashHeader variant="bare" />
           <DashContent className="pt-2 md:pt-3">
-            <DashTitle>Doop UI</DashTitle>
+            <DashTitle>{`${brand.name} UI`}</DashTitle>
           </DashContent>
         </DashMain>
       </DashLayout>

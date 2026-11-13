@@ -1,3 +1,4 @@
+import { brand } from '../shared/brand.ts'
 import type { Request, Response } from 'express'
 import { Server } from '@modelcontextprotocol/sdk/server/index.js'
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js'
@@ -25,7 +26,7 @@ export async function handleGeminiCloudMcp(req: Request, res: Response) {
     res.status(405).end()
     return
   }
-  const server = new Server({ name: 'doop', version: '1.0.0' }, { capabilities: { tools: {} } })
+  const server = new Server({ name: brand.mcpName, version: '1.0.0' }, { capabilities: { tools: {} } })
   server.setRequestHandler(ListToolsRequestSchema, () => ({
     tools: run.request.tools.map((tool) => ({
       name: tool.name,

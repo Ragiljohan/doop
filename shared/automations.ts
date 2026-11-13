@@ -1,5 +1,6 @@
 import { normalizePipeline } from './agents.ts'
 import type { FrameApproval } from './types.ts'
+import { brand } from './brand'
 
 /** Scheduled or approval-triggered workflows. Every step names a canvas;
  * approval workflows use the watched canvas and carry only the signed-off sources.
@@ -418,7 +419,7 @@ export const AUTOMATION_EXAMPLES: AutomationExample[] = [
   {
     id: 'ad-variants',
     name: 'Ad variants',
-    blurb: 'Pull this week’s creatives, then have Doop spin up five variants of each.',
+    blurb: `Pull this week’s creatives, then have ${brand.name} spin up five variants of each.`,
     schedule: { kind: 'weekly', weekday: 1, hour: 9, minute: 0 },
     steps: [
       { type: 'pull', provider: 'meta', accountId: '', filter: 'active' },

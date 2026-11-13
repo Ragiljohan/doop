@@ -110,7 +110,7 @@ describe('Slack installation', () => {
     const callback = await stranger.get(
       `/api/integrations/slack/callback?state=${start.searchParams.get('state')}&code=good-code`,
     )
-    expect(decodeURIComponent(callback.headers.get('location') ?? '')).toContain('already has a Doop installer')
+    expect(decodeURIComponent(callback.headers.get('location') ?? '')).toContain('already has a Design installer')
     expect(await status(stranger)).toMatchObject({ connected: false })
   })
 

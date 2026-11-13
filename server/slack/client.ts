@@ -1,5 +1,6 @@
 import { env } from '../env.ts'
 import { z } from 'zod'
+import { brand } from '../../shared/brand.ts'
 
 /**
  * Slack Web API errors surface as our own words plus Slack's error *code*
@@ -44,7 +45,7 @@ export async function slackApi<T>(
   if (!body.data.ok) {
     const code = body.data.error ?? 'unknown'
     if (['invalid_auth', 'account_inactive', 'token_revoked', 'not_authed'].includes(code)) {
-      throw new SlackError('Slack revoked Doop’s access. Reinstall Doop in Slack.', 409, code)
+      throw new SlackError(`Slack revoked ${brand.name}’s access. Reinstall ${brand.name} in Slack.`, 409, code)
     }
     throw new SlackError('Slack could not complete this request.', 502, code)
   }

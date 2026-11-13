@@ -17,6 +17,7 @@ import {
 } from '../shared/webhooks.ts'
 import type { CanvasEvent } from './events.ts'
 import type { AgentTask, Canvas, ElementComment, Frame } from '../shared/types.ts'
+import { brand } from '../shared/brand.ts'
 
 /**
  * Outbound webhooks: the push counterpart of polling get_comments over MCP.
@@ -496,7 +497,7 @@ export async function testWebhook(userId: string, id: string): Promise<WebhookDe
     id: `evt_${nanoid(12)}`,
     type: 'ping',
     at: Date.now(),
-    message: 'Hello from doop — this webhook is wired up.',
+    message: `Hello from ${brand.name} — this webhook is wired up.`,
   })
   if (!result) return undefined
   record(hook, ticket, result)

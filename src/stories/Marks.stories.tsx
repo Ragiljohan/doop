@@ -6,6 +6,7 @@ import { APP_ICON_BRANDS, AppIcon, BRANDS, BrandMark } from '@/components/ui/bra
 import { MetaTile } from '@/components/AutomateShell'
 import { ClockTile } from '@/components/AutomateShell'
 import { colorFor } from '../../shared/types'
+import { brand } from '../../shared/brand'
 
 /**
  * Every mark the product wears: its own, the agents', the people's and the
@@ -40,7 +41,7 @@ export const DoopAnimated: Story = {
 export const Agents: Story = {
   render: () => (
     <div className="flex items-center gap-5 text-body">
-      {['Claude Code', 'Codex', 'Cursor', 'Doop'].map((name) => (
+      {['Claude Code', 'Codex', 'Cursor', brand.name].map((name) => (
         <span key={name} className="flex items-center gap-2" style={{ color: colorFor(name) }}>
           <AgentIcon name={name} size={14} />
           <span className="text-ink-soft">{name}</span>

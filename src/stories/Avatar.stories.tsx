@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Avatar, AvatarStack, initials } from '@/components/ui/avatar'
 import { colorFor } from '../../shared/types'
+import { brand } from '../../shared/brand'
 
 /**
  * Who is here, as one face: a disc on a 2px surface collar. A person is
@@ -88,7 +89,7 @@ export const Agents: Story = {
       <Avatar name="Claude Code" kind="agent" glaze />
       <Avatar name="Codex" kind="agent" glaze glazeDelay={1.3} />
       <Avatar name="Cursor" kind="agent" />
-      <Avatar name="Doop Reviewer" kind="agent" />
+      <Avatar name={`${brand.name} Reviewer`} kind="agent" />
     </div>
   ),
 }
