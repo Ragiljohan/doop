@@ -1,3 +1,4 @@
+import { brand } from '../../shared/brand'
 import { cursorMcpInstallUrl } from '../lib/cursorConnection'
 import { Button } from './ui/button'
 import { CodeBlock } from './ui/code-block'
@@ -18,9 +19,12 @@ export function CursorInstall({ mcpUrl }: { mcpUrl: string }) {
         <>
           <p>
             {t('workspace.cursorHelpBefore')} <strong>Customize</strong> {t('workspace.cursorHelpMiddle')}{' '}
-            <code>doop</code> {t('workspace.cursorHelpAfter')}
+            <code>{brand.name}</code> {t('workspace.cursorHelpAfter')}
           </p>
-          <CodeBlock text={JSON.stringify({ mcpServers: { doop: { url: mcpUrl } } }, null, 2)} className="mt-2.5" />
+          <CodeBlock
+            text={JSON.stringify({ mcpServers: { [brand.name]: { url: mcpUrl } } }, null, 2)}
+            className="mt-2.5"
+          />
         </>
       }
     />

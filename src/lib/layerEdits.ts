@@ -185,7 +185,7 @@ export function setLayersLocked(frame: Frame, selectors: string[], locked: boole
     html = next
   }
   saveFrameHtml(frame, html)
-  for (const selector of selectors) void requestFrame(frame.id, 'doop:lock', { selector, locked })
+  for (const selector of selectors) void requestFrame(frame.id, `doop:lock`, { selector, locked })
   return true
 }
 
@@ -401,7 +401,7 @@ export function setLayersHidden(frame: Frame, selectors: string[], hidden: boole
   if (html === null) return false
   if (html !== frame.html) saveFrameHtml(frame, html)
   // Text editing withholds HTML updates; its next save serializes the live iframe.
-  for (const selector of selectors) void requestFrame(frame.id, 'doop:visibility', { selector, hidden })
+  for (const selector of selectors) void requestFrame(frame.id, `doop:visibility`, { selector, hidden })
   return true
 }
 

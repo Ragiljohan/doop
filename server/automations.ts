@@ -13,6 +13,7 @@ import { getUserName, isBanned } from './auth.ts'
 import { roleName } from '../shared/agents.ts'
 import type { AgentTask } from '../shared/types.ts'
 import { env } from './env.ts'
+import { brand } from '../shared/brand.ts'
 import {
   MAX_NAME,
   incompleteReason,
@@ -349,7 +350,7 @@ async function queueAgent(
   step: Extract<Step, { type: 'agent' }>,
 ) {
   const gate = await allowance.consumeResidentTask(row.ownerId)
-  if (!gate.ok) throw new StepError('no model account connected — the Doop Agent has nothing to run on')
+  if (!gate.ok) throw new StepError(`no model account connected — the ${brand.name} Agent has nothing to run on`)
   let committed = false
   try {
     const sourceBrief = state.sources.length

@@ -20,6 +20,7 @@ import { CheckIcon, ChevronLeftIcon } from './ui/icons'
 import { Modal, ModalActions, ModalLede, ModalSpacer, ModalTitle } from './ui/modal'
 import { cn } from '@/lib/utils'
 import { isDesktopShell } from '../lib/shell'
+import { brand } from '../../shared/brand'
 
 /**
  * "Connect AI" is about agents that join the canvas from outside: Claude Code,
@@ -162,7 +163,7 @@ function agentSteps(
   prompt: string,
   { claudeConnection, mcpConnection, canvasId, openAgentKeys }: StepOptions,
 ): { lede: string; steps: Step[] } {
-  const jsonConfig = JSON.stringify({ mcpServers: { doop: { type: 'http', url: mcpUrl } } }, null, 2)
+  const jsonConfig = JSON.stringify({ mcpServers: { [brand.name]: { type: 'http', url: mcpUrl } } }, null, 2)
   const pointAt: Step = {
     title: t('connect.pointAtTitle'),
     body: prompt ? t('connect.pointAtWithPrompt') : t('connect.pointAtNoPrompt'),
@@ -178,11 +179,11 @@ function agentSteps(
             body: (
               <>
                 {t('connect.claudeCodeAddBefore')}
-                <code>doop</code>
+                <code>{brand.name}</code>
                 {t('connect.claudeCodeAddAfter')}
               </>
             ),
-            code: `claude mcp add --transport http doop "${mcpUrl}"`,
+            code: `claude mcp add --transport http ${brand.name} "${mcpUrl}"`,
           },
           {
             title: t('connect.claudeCodeSignInTitle'),
@@ -191,7 +192,7 @@ function agentSteps(
                 {t('connect.claudeCodeSignInBefore')}
                 <code>/mcp</code>
                 {t('connect.claudeCodeSignInPick')}
-                <strong>doop</strong>
+                <strong>{brand.name}</strong>
                 {t('connect.claudeCodeSignInThen')}
                 {/* Claude Code's own menu label, which it shows in English */}
                 <strong>Authenticate</strong>
@@ -316,7 +317,7 @@ function agentSteps(
             body: (
               <>
                 {t('connect.chatgptAddBefore')}
-                <strong>Doop</strong>
+                <strong>{brand.name}</strong>
                 {t('connect.chatgptAddDescribe')}
                 <strong>OAuth</strong>
                 {t('connect.chatgptAddReview')}
@@ -345,7 +346,7 @@ function agentSteps(
           {
             title: t('connect.codexSignInTitle'),
             body: t('connect.codexSignInBody'),
-            code: 'codex mcp login doop',
+            code: `codex mcp login ${brand.name}`,
           },
           pointAt,
         ],
@@ -381,7 +382,7 @@ function agentSteps(
             body: (
               <>
                 {t('connect.mcpConfigBefore')}
-                <code>doop</code>
+                <code>{brand.name}</code>
                 {t('connect.mcpConfigAfter')}
               </>
             ),
@@ -421,7 +422,7 @@ function AgentSteps({
      rest lives behind get_guide. The only thing this prompt knows that they don't is
      which canvas the human is looking at. */
   const prompt = canvasId
-    ? `Work on Doop canvas ${canvasId}. Start with get_guide({ topic: "doop-instructions" }) and follow it.`
+    ? `Work on ${brand.name} canvas ${canvasId}. Start with get_guide({ topic: "doop-instructions" }) and follow it.`
     : ''
   const [mcpConnection, setMcpConnection] = useState<McpConnection>('browser')
   /* a browser keeps these steps open beside the new tab; the desktop shell's

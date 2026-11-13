@@ -1,0 +1,20 @@
+{
+  "name": "Design",
+  "shortName": "Design",
+  "tagline": "Design workspace",
+  "description": "Design workspace",
+  "primaryColor": "#171717",
+  "accentColor": "#e6e6e6",
+  "supportEmail": "",
+  "senderName": "Design",
+  "emailFrom": "Design <no-reply@localhost>",
+  "publicUrl": "",
+  "footer": "",
+  "links": {
+    "source": "https://github.com/Ragiljohan/doop",
+    "upstream": "https://github.com/kgoedecke/doop",
+    "docs": "",
+    "download": "",
+    "website": ""
+  }
+}

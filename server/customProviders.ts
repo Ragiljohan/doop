@@ -4,6 +4,7 @@ import { customTurn, type CustomTarget } from './agentModel.ts'
 import { customProviderFetch, reachableUrl } from './customProviderFetch.ts'
 import type { ModelOption } from '../shared/modelMenu.ts'
 import { MAX_CUSTOM_MODEL_ID, type CustomModel, type CustomProviderConfig } from '../shared/customProvider.ts'
+import { brand } from '../shared/brand.ts'
 
 /**
  * What Settings asks of a custom provider while it is being set up: which
@@ -96,7 +97,7 @@ export async function testCustomProvider(target: CustomTarget, model: CustomMode
   )
   if (!called) {
     throw new CustomProviderError(
-      `${model.id} answered without calling a tool. Doop’s agent works through tool calls, so pick a model (or a server setting) with tool calling.`,
+      `${model.id} answered without calling a tool. ${brand.name}’s agent works through tool calls, so pick a model (or a server setting) with tool calling.`,
     )
   }
 }

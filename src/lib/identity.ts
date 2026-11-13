@@ -1,5 +1,4 @@
 import { nanoid } from 'nanoid'
-
 /* localStorage is missing in some test runtimes and throws in locked-down
    browsers; fall back to a per-session store so identity still works. */
 const memory = new Map<string, string>()
@@ -34,19 +33,19 @@ function randomName() {
 }
 
 export function getIdentity(): { clientId: string; name: string } {
-  let clientId = storage.get('doop:clientId')
+  let clientId = storage.get(`doop:clientId`)
   if (!clientId) {
     clientId = nanoid(12)
-    storage.set('doop:clientId', clientId)
+    storage.set(`doop:clientId`, clientId)
   }
-  let name = storage.get('doop:name')
+  let name = storage.get(`doop:name`)
   if (!name) {
     name = randomName()
-    storage.set('doop:name', name)
+    storage.set(`doop:name`, name)
   }
   return { clientId, name }
 }
 
 export function setName(name: string) {
-  storage.set('doop:name', name)
+  storage.set(`doop:name`, name)
 }

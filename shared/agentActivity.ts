@@ -1,4 +1,5 @@
 import type { AgentTask } from './types.ts'
+import { brand } from './brand'
 
 /** Wire format shared with AgentActivityState in the iOS app/widget. Under APNs' 4 KB limit. */
 export function agentActivityState(canvasName: string, tasks: AgentTask[]) {
@@ -20,7 +21,7 @@ export function agentActivityState(canvasName: string, tasks: AgentTask[]) {
   const pipeline = count > 0 && step >= 0 && step < count
   return {
     canvasName: [...canvasName].slice(0, 80).join(''),
-    agentName: [...(task.agentName || 'Doop')].slice(0, 60).join(''),
+    agentName: [...(task.agentName || brand.name)].slice(0, 60).join(''),
     status: [...(phase === 'failed' ? (task.failureReason ?? task.status) : task.status)].slice(0, 200).join(''),
     phase,
     activeCount: running.length,

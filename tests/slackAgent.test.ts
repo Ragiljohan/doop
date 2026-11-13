@@ -191,7 +191,7 @@ describe('Slack app installation', () => {
   it('does not transfer installation or billing to another Doop user', async () => {
     const { url } = await startInstall('stranger')
     await expect(finishInstall('stranger', new URL(url).searchParams.get('state')!, 'code')).rejects.toThrow(
-      'already has a Doop installer',
+      'already has a Design installer',
     )
     expect((await db.select().from(slackInstallations))[0]?.userId).toBe(userId)
   })
@@ -244,11 +244,11 @@ describe('design jobs', () => {
     const ack = sent.find((request) => request.method === 'chat.postMessage')!
     expect(ack.authorization).toBe('Bearer xoxb-secret')
     expect(ack.body).toMatchObject({ channel: channelId, thread_ts: '1700000000.000100' })
-    expect(String(ack.body.text)).toMatch(/^Doop is on it/)
+    expect(String(ack.body.text)).toMatch(/^Design is on it/)
     await tickSlack()
     const linked = sent.find((request) => request.method === 'chat.update')!
     expect(linked.body.ts).toBe(row.ackTs)
-    expect(String(linked.body.text)).toContain(`https://doop.example/c/${row.canvasId}|Open design in Doop`)
+    expect(String(linked.body.text)).toContain(`https://doop.example/c/${row.canvasId}|Open design in Design`)
     expect((await session()).linked).toBe(true)
     await receiveRequest(mention())
     await tickSlack()

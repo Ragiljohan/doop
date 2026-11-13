@@ -1,3 +1,4 @@
+import { brand } from '../../shared/brand'
 import { DESKTOP_SCHEME } from './desktopAuth'
 
 export const CODEX_SETUP_PATH = '/desktop/connect/codex'
@@ -11,7 +12,8 @@ const bridge = globalThis as CodexBridge
 export const canAddToCodex = () => bridge.__DOOP_CODEX_SETUP__ === true && !!bridge.__TAURI__?.core
 
 export async function addToCodex(): Promise<void> {
-  if (!canAddToCodex()) throw new Error('Update Doop Desktop to add Codex directly, or use the manual setup below.')
+  if (!canAddToCodex())
+    throw new Error(`Update ${brand.name} Desktop to add Codex directly, or use the manual setup below.`)
   // The native command derives /mcp from its own webview. Neither a website
   // handoff nor an IPC argument can select another server or a local command.
   await bridge.__TAURI__!.core!.invoke('codex_add_mcp')
@@ -65,12 +67,23 @@ export function codexSetupTarget(link: string): string | null {
   }
 }
 
+function canonicalOrigin(origin: string): string {
+  if (!brand.publicUrl) return origin
+  try {
+    const pub = new URL(brand.publicUrl)
+    const url = new URL(origin)
+    if (url.hostname === `www.${pub.hostname}`) return pub.origin
+    return origin
+  } catch {
+    return origin
+  }
+}
+
 export function parseCodexSetup(search: string, currentOrigin: string): { canvasId?: string } | null {
   const params = new URLSearchParams(search)
   const requested = serverOrigin(params.get('origin'))
   const current = serverOrigin(currentOrigin)
   if (!requested || !current) return null
-  const canonical = (origin: string) => (origin === 'https://www.doop.design' ? 'https://doop.design' : origin)
-  if (canonical(requested) !== canonical(current)) return null
+  if (canonicalOrigin(requested) !== canonicalOrigin(current)) return null
   return { canvasId: canvasFrom(params) }
 }

@@ -22,7 +22,6 @@ import type { SnapGuide } from './snap'
 import { isDrawingTool, type Tool } from './tools'
 import { setOutlines } from './frameBridge'
 import { readViewOptions, writeViewOptions, type ViewOption, type ViewOptions } from './viewOptions'
-
 export interface Viewport {
   x: number
   y: number
@@ -279,8 +278,8 @@ interface State {
   setStream(frameId: string, actor: { name: string; color: string } | null): void
 }
 
-const LAYERS_OPEN_KEY = 'doop:layers-open'
-const RULERS_KEY = 'doop:rulers'
+const LAYERS_OPEN_KEY = `doop:layers-open`
+const RULERS_KEY = `doop:rulers`
 /* longer than the slowest real export (Canva: render + verify, ~3 min) */
 const BUSY_NOTICE_MAX_MS = 5 * 60_000
 

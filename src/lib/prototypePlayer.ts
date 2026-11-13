@@ -85,7 +85,7 @@ export function isProtoScaling(value: unknown): value is ProtoScaling {
 }
 
 /* Per browser, like the panel layout: it is how this device plays prototypes. */
-const PROTO_SCALING_STORAGE_KEY = 'doop:proto-scaling'
+const PROTO_SCALING_STORAGE_KEY = `doop:proto-scaling`
 
 export function readProtoScaling(): ProtoScaling {
   try {

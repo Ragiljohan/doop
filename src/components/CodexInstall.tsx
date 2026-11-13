@@ -6,6 +6,7 @@ import { Button } from './ui/button'
 import { CodeBlock } from './ui/code-block'
 import { InstallBlock } from './ui/install-block'
 import { useT } from '../lib/i18n'
+import { brand } from '../../shared/brand'
 
 export function CodexInstall({ mcpUrl, canvasId }: { mcpUrl: string; canvasId?: string }) {
   const t = useT()
@@ -28,7 +29,7 @@ export function CodexInstall({ mcpUrl, canvasId }: { mcpUrl: string; canvasId?: 
   const manual = (
     <>
       <p>{t('workspace.codexManual')}</p>
-      <CodeBlock text={`codex mcp add doop --url ${mcpUrl}`} className="mt-2" />
+      <CodeBlock text={`codex mcp add ${brand.name} --url ${mcpUrl}`} className="mt-2" />
     </>
   )
 

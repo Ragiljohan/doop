@@ -1,7 +1,9 @@
-/* doop.design's own pages: the marketing site and its download page.
-   Absolute on purpose: a self-hosted server has no marketing site, and the
-   desktop installers are the same whichever server they connect to. */
-export const DOWNLOAD_URL = 'https://doop.design/download'
-/* `?site` makes the server answer `/` with the website even for a signed-in
-   visitor, who would otherwise land back on the dashboard (server/marketing.ts) */
-export const WEBSITE_URL = 'https://doop.design/?site'
+import { brand } from '../../shared/brand'
+
+/* Pages outside this app. Empty until brand/brand.config.json sets them, so a
+   self-hosted server does not send people to the upstream marketing site.
+   `docs` falls back to the in-app /docs path. */
+export const DOWNLOAD_URL = brand.links.download
+export const WEBSITE_URL = brand.links.website
+export const DOCS_URL = brand.links.docs || '/docs'
+export const SOURCE_URL = brand.links.source

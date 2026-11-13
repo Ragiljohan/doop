@@ -157,7 +157,7 @@ const FLOAT_GAP = 10
 /* the narrowest stage docked panels squeeze it to, while their minimums allow */
 const DOCKED_STAGE_MIN = 320
 const AGENTS_W = 280
-const PANEL_WIDTH_KEY = 'doop:canvas-panel-widths'
+const PANEL_WIDTH_KEY = `doop:canvas-panel-widths`
 
 function readPanelWidths(): { layers: number; agents: number } {
   try {

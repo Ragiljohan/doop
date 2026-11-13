@@ -1,3 +1,4 @@
+import { brand } from '../shared/brand.ts'
 import { PDFDocument } from 'pdf-lib'
 import type { Frame as PageFrame } from 'puppeteer-core'
 import type { Canvas, Frame } from '../shared/types.ts'
@@ -156,8 +157,8 @@ export async function renderFramesPdf(frames: readonly Frame[]): Promise<Buffer>
     const [copied] = await merged.copyPages(source, [0])
     if (copied) merged.addPage(copied)
   }
-  merged.setProducer('Doop')
-  merged.setCreator('Doop')
+  merged.setProducer(brand.name)
+  merged.setCreator(brand.name)
   return Buffer.from(await merged.save())
 }
 
@@ -207,5 +208,5 @@ export function takePdfExportSlot(key: string, now = Date.now()): boolean {
 /** A download name for the PDF: the frame's name for one frame, else the canvas's. */
 export function pdfFileName(canvas: Canvas, frames: readonly Frame[]): string {
   const name = frames.length === 1 ? frames[0]!.name : canvas.name
-  return `${name.replace(/[^\w\- ]+/g, '').trim() || 'doop'}.pdf`
+  return `${name.replace(/[^\w\- ]+/g, '').trim() || brand.mcpSlug}.pdf`
 }

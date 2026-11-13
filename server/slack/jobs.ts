@@ -13,6 +13,7 @@ import type { AgentTask, Canvas } from '../../shared/types.ts'
 import { publicOrigin, type Installation } from './oauth.ts'
 import { postedMessage, postToResponseUrl, slackApi, SlackError } from './client.ts'
 import { buildPrompt, plainText, titleFor } from './prompt.ts'
+import { brand } from '../../shared/brand.ts'
 
 type Session = typeof slackSessions.$inferSelect
 const terminal = ['complete', 'failed', 'canceled']
@@ -21,8 +22,8 @@ const MAX_CONCURRENT = 3
 const RUN_TIMEOUT_MS = 60 * 60_000
 const workInFlight = new Set<string>()
 const SLACK_COLOR = '#4A154B'
-const NO_BRIEF = 'Mention @Doop with a design brief, for example “@Doop design a pricing page for a note-taking app”.'
-const SUSPENDED = 'The Doop account behind this Slack agent is suspended, so it cannot design.'
+const NO_BRIEF = `Mention @${brand.name} with a design brief, for example “@${brand.name} design a pricing page for a note-taking app”.`
+const SUSPENDED = `The ${brand.name} account behind this Slack agent is suspended, so it cannot design.`
 
 /** A mention or slash command, after the webhook verified its signature. */
 export interface Inbound {
@@ -124,7 +125,7 @@ async function threadAwaiting(
 }
 
 const canvasUrl = (id: string) => `${publicOrigin()}/c/${id}`
-const openLink = (id: string) => `<${canvasUrl(id)}|Open design in Doop>`
+const openLink = (id: string) => `<${canvasUrl(id)}|Open design in ${brand.name}>`
 
 /** The last surviving frame this card edited. Never another frame on the
  *  canvas: the channel is not a canvas member, so only the card's own work
@@ -141,7 +142,7 @@ type Message = { text: string; blocks?: Record<string, unknown>[] }
  *  when Doop is not in that channel. Resolves to the message ts when it has one. */
 async function post(installation: Installation, session: Session, message: Message): Promise<string | undefined> {
   const viaResponseUrl = async () => {
-    if (!session.responseUrl) throw new SlackError('Invite @Doop to this channel so it can reply.', 409)
+    if (!session.responseUrl) throw new SlackError(`Invite @${brand.name} to this channel so it can reply.`, 409)
     await postToResponseUrl(session.responseUrl, { response_type: 'in_channel', ...message })
     return undefined
   }
@@ -198,7 +199,7 @@ function resultMessage(session: Session): Message {
   const link = session.canvasId ? openLink(session.canvasId) : ''
   if (session.status !== 'complete') return { text: `${session.error || 'The design was stopped.'} ${link}`.trim() }
   const frameId = resultFrameId(session)
-  const text = `Doop finished the design. ${link}`
+  const text = `${brand.name} finished the design. ${link}`
   const blocks: Record<string, unknown>[] = [{ type: 'section', text: { type: 'mrkdwn', text } }]
   if (frameId) {
     blocks.push({ type: 'image', image_url: `${publicOrigin()}/i/${frameId}.png`, alt_text: 'The finished design' })
@@ -208,7 +209,7 @@ function resultMessage(session: Session): Message {
     elements: [
       {
         type: 'mrkdwn',
-        text: 'The canvas belongs to the Doop installer; they can invite collaborators or enable link sharing. Mention @Doop in this thread to ask for changes.',
+        text: `The canvas belongs to the ${brand.name} installer; they can invite collaborators or enable link sharing. Mention @${brand.name} in this thread to ask for changes.`,
       },
     ],
   })
@@ -249,16 +250,16 @@ async function dispatch(session: Session) {
   try {
     if (await isBanned(session.userId)) throw new Error(SUSPENDED)
     if (!(await pickModel(session.userId)))
-      throw new Error('Connect a model account in Doop Settings, then mention @Doop again.')
+      throw new Error(`Connect a model account in ${brand.name} Settings, then mention @${brand.name} again.`)
     gate = await consumeResidentTask(session.userId)
     if (!gate.ok)
       throw new Error(
-        'Connect a model account in Doop Settings or restore your task allowance, then mention @Doop again.',
+        `Connect a model account in ${brand.name} Settings or restore your task allowance, then mention @${brand.name} again.`,
       )
     const now = Date.now()
     const existing = session.followUp && session.canvasId ? store.getCanvas(session.canvasId) : undefined
     if (session.followUp && (!existing || existing.ownerId !== session.userId))
-      throw new Error('The design canvas for this thread is gone. Start a new request with @Doop.')
+      throw new Error(`The design canvas for this thread is gone. Start a new request with @${brand.name}.`)
     const canvas: Canvas = existing ?? {
       id: nanoid(10),
       name: session.title,
@@ -333,9 +334,12 @@ async function dispatch(session: Session) {
         error:
           error instanceof SlackError
             ? error.message
-            : error instanceof Error && /^(Connect|The design canvas|The Doop account)/.test(error.message)
+            : error instanceof Error &&
+                (error.message.startsWith('Connect') ||
+                  error.message.startsWith('The design canvas') ||
+                  error.message.startsWith(`The ${brand.name} account`))
               ? error.message
-              : 'Doop could not start the design. Check your model account in Doop Settings and mention @Doop again.',
+              : `${brand.name} could not start the design. Check your model account in ${brand.name} Settings and mention @${brand.name} again.`,
         updatedAt: Date.now(),
       })
       .where(and(eq(slackSessions.id, session.id), eq(slackSessions.status, 'preparing')))
@@ -371,8 +375,8 @@ async function processSession(session: Session) {
     if (!session.acknowledged && !terminal.includes(session.status)) {
       const ackTs = await post(installation, session, {
         text: session.followUp
-          ? 'Doop is on it — working on your changes on the same canvas.'
-          : 'Doop is on it — designing from your brief. The canvas link follows in a moment.',
+          ? `${brand.name} is on it — working on your changes on the same canvas.`
+          : `${brand.name} is on it — designing from your brief. The canvas link follows in a moment.`,
       })
       await db
         .update(slackSessions)
@@ -396,7 +400,7 @@ async function processSession(session: Session) {
         Date.now() - (card?.startedAt ?? session.updatedAt) > RUN_TIMEOUT_MS
       // The result carries the link itself, so a finished card never waits on the link update.
       if (!session.linked && !finished) {
-        await updateAck(installation, session, `Doop is on it — ${openLink(session.canvasId)}`)
+        await updateAck(installation, session, `${brand.name} is on it — ${openLink(session.canvasId)}`)
         await db.update(slackSessions).set({ linked: true }).where(eq(slackSessions.id, session.id))
       }
       if (finished) {
@@ -404,7 +408,9 @@ async function processSession(session: Session) {
         session = {
           ...session,
           status: success ? 'complete' : 'failed',
-          error: success ? null : 'The design did not finish. Open the canvas to inspect the work and retry in Doop.',
+          error: success
+            ? null
+            : `The design did not finish. Open the canvas to inspect the work and retry in ${brand.name}.`,
         }
         if (!success && card && !card.failedAt && !card.endedAt) {
           actions.failCard(session.canvasId!, card.id, 'Slack design request timed out.')
@@ -477,7 +483,7 @@ export async function tickSlack() {
     .update(slackSessions)
     .set({
       status: 'failed',
-      error: 'Doop restarted before the design was queued. Mention @Doop again.',
+      error: `${brand.name} restarted before the design was queued. Mention @${brand.name} again.`,
       updatedAt: Date.now(),
     })
     .where(and(eq(slackSessions.status, 'preparing'), lt(slackSessions.updatedAt, Date.now() - 120_000)))

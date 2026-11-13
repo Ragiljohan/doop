@@ -19,7 +19,7 @@ ARG VITE_POSTHOG_HOST
 # comma-separated email domains whose sessions skip replay (operator accounts)
 ARG VITE_POSTHOG_INTERNAL_DOMAINS
 
-RUN bun run build
+RUN bun run apply-brand && bun run build
 
 # ---- runtime dependencies ----
 # Installed by bun, but into a plain node_modules the Node runtime below reads

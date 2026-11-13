@@ -20,6 +20,7 @@ import {
   DropdownMenuTrigger,
 } from './ui/dropdown-menu'
 import { MenuButton } from './ui/menu-button'
+import { brand } from '../../shared/brand'
 
 /* the brand mark each connection's models wear in the picker */
 const PROVIDER_MARK: Partial<Record<RunnerProvider, Brand>> = {
@@ -84,7 +85,7 @@ export function ModelPicker({ disabled = false }: { disabled?: boolean }) {
   const modelsOf = (runner: AgentRunner): RunnerOption[] =>
     runner.provider === liveKind && catalog?.live ? catalog.models : runner.models
 
-  const label = resolved ? modelName(modelsOf(resolved.runner), resolved.pick.model ?? '') : 'Doop Agent'
+  const label = resolved ? modelName(modelsOf(resolved.runner), resolved.pick.model ?? '') : `${brand.name} Agent`
   const mark = resolved ? PROVIDER_MARK[resolved.runner.provider] : undefined
   /* the effort reads after the model, lighter, as in Settings */
   const effortId = resolved?.pick.effort

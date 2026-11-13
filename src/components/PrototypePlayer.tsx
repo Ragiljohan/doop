@@ -30,7 +30,6 @@ import {
   DropdownMenuTrigger,
 } from './ui/dropdown-menu'
 import { t as translate, useT } from '@/lib/i18n'
-
 /* One screen on the player's history stack: the frame it shows and how it
    arrived, so Back can play that transition in reverse. The key is unique per
    visit — going back mounts a fresh document, as a reload of that page would.
@@ -342,7 +341,7 @@ export function PrototypePlayer({
       if (e.key === 'Escape') return handlers.current.escape()
       if (e.repeat || e.metaKey || e.ctrlKey) return
       const win = handlers.current.topWindow()
-      win?.postMessage({ type: 'doop:proto-key', key: e.key, reqId: `key-${e.timeStamp}` }, '*')
+      win?.postMessage({ type: `doop:proto-key`, key: e.key, reqId: `key-${e.timeStamp}` }, '*')
     }
     const onUp = () => handlers.current.release()
     window.addEventListener('keydown', onKey, true)
@@ -377,7 +376,7 @@ export function PrototypePlayer({
   )
 
   function flashHotspots() {
-    for (const win of windows.current.values()) win.postMessage({ type: 'doop:proto-hotspots' }, '*')
+    for (const win of windows.current.values()) win.postMessage({ type: `doop:proto-hotspots` }, '*')
   }
 
   const current = stack.at(-1)!
@@ -414,12 +413,12 @@ export function PrototypePlayer({
     onMessage: (data: { type?: string; interaction?: unknown; press?: boolean }) => {
       /* a covered screen is switched off, but an action it sent before the
          switch reached it must not act over the screen on top */
-      if (data.type === 'doop:proto-action') {
+      if (data.type === `doop:proto-action`) {
         if (topEntry()?.key === entry.key) run(data.interaction, !!data.press)
-      } else if (data.type === 'doop:proto-release') release()
+      } else if (data.type === `doop:proto-release`) release()
       /* Escape with the focus in a screen: the same overlay-first path as a
          key pressed on the player itself */
-      else if (data.type === 'doop:esc') escape()
+      else if (data.type === `doop:esc`) escape()
     },
   })
 
@@ -617,7 +616,7 @@ function askKey(win: Window, key: string): Promise<boolean> {
     const timer = window.setTimeout(() => done(false), KEY_REPLY_MS)
     function onMsg(ev: MessageEvent) {
       const data = ev.data as { type?: string; reqId?: string; handled?: boolean } | null
-      if (ev.source === win && data?.type === 'doop:proto-key-result' && data.reqId === reqId) done(!!data.handled)
+      if (ev.source === win && data?.type === `doop:proto-key-result` && data.reqId === reqId) done(!!data.handled)
     }
     function done(handled: boolean) {
       window.clearTimeout(timer)
@@ -625,7 +624,7 @@ function askKey(win: Window, key: string): Promise<boolean> {
       resolve(handled)
     }
     window.addEventListener('message', onMsg)
-    win.postMessage({ type: 'doop:proto-key', key, reqId }, '*')
+    win.postMessage({ type: `doop:proto-key`, key, reqId }, '*')
   })
 }
 
@@ -672,15 +671,15 @@ function ProtoScreen({
       if (!win || ev.source !== win) return
       const data = ev.data as { type?: string; reqId?: string } | null
       if (!data?.type) return
-      if (data.type === 'doop:frame-ready') {
+      if (data.type === `doop:frame-ready`) {
         latest.current.register(key, win)
         setBooted(true)
-      } else if (data.type === 'doop:html-result') {
+      } else if (data.type === `doop:html-result`) {
         if (!first) return
         first = false
         setShown(true)
         latest.current.onReady(key)
-      } else if (data.type === 'doop:proto-result') {
+      } else if (data.type === `doop:proto-result`) {
         if (data.reqId === focusOnSwitch.current) {
           focusOnSwitch.current = null
           iframeRef.current?.focus()
@@ -696,7 +695,7 @@ function ProtoScreen({
 
   const html = frame?.html ?? ''
   useEffect(() => {
-    if (booted) iframeRef.current?.contentWindow?.postMessage({ type: 'doop:html', html, reqId: 'proto' }, '*')
+    if (booted) iframeRef.current?.contentWindow?.postMessage({ type: `doop:html`, html, reqId: 'proto' }, '*')
   }, [booted, html])
 
   useEffect(() => {
@@ -712,7 +711,7 @@ function ProtoScreen({
     const focused = document.activeElement
     const takesFocus = interactive && ((screenHasFocus() && focused !== iframe) || latest.current.takeFocus())
     focusOnSwitch.current = takesFocus ? reqId : null
-    iframe.contentWindow?.postMessage({ type: 'doop:proto', on: interactive, reqId }, '*')
+    iframe.contentWindow?.postMessage({ type: `doop:proto`, on: interactive, reqId }, '*')
   }, [shown, interactive])
 
   if (!frame || !layout) return <div className="text-body text-code-ink/70">{t('panels.protoDeleted')}</div>

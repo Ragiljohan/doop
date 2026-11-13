@@ -2,6 +2,7 @@ import * as React from 'react'
 
 import { cn } from '@/lib/utils'
 import { DashTitle } from './dash'
+import { BrandCredit } from './brand-credit'
 import { Wordmark } from './wordmark'
 
 /* Full-viewport shell for the signed-out screens: a centred card on paper with
@@ -16,10 +17,13 @@ function AuthScreen({ className, children, ...props }: React.ComponentProps<'div
   return (
     <div
       data-slot="auth-screen"
-      className={cn('flex h-dvh min-h-dvh flex-col overflow-y-auto bg-paper px-4 py-5 sm:p-8 [&>*]:m-auto', className)}
+      className={cn('flex h-dvh min-h-dvh flex-col overflow-y-auto bg-paper px-4 py-5 sm:p-8', className)}
       {...props}
     >
-      {children}
+      <div className="m-auto flex w-full flex-col items-center">
+        {children}
+        <BrandCredit className="mt-6 justify-center" />
+      </div>
     </div>
   )
 }

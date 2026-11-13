@@ -12,6 +12,7 @@ import { customProviderFetch } from './customProviderFetch.ts'
 import { isCustomProviderKind, type CustomModel, type CustomProviderConfig } from '../shared/customProvider.ts'
 import { ModelAuthError, ModelUnavailableError, effortFor, runAzureTurn, runOpenAiTurn } from './openaiAgent.ts'
 import type { StopReason, TurnBlock } from './openaiAgent.ts'
+import { brand } from '../shared/brand.ts'
 import {
   IMAGE_OMITTED_NOTE,
   deepseekConfig,
@@ -86,7 +87,7 @@ let anthropic: Anthropic | null = null
 function anthropicTier(model: string = ANTHROPIC_MODEL): AgentModel | null {
   if (!env.ANTHROPIC_API_KEY) {
     warnOnce(
-      '[doop-agent] ANTHROPIC_API_KEY not set — the free Doop Agent tier is off. Users who connect a model account of their own still get the agent; everyone else sees queued cards and @mentions go unpicked. See README → "The Doop Agent".',
+      `[doop-agent] ANTHROPIC_API_KEY not set — the free ${brand.name} Agent tier is off. Users who connect a model account of their own still get the agent; everyone else sees queued cards and @mentions go unpicked. See README → "The ${brand.name} Agent".`,
     )
     return null
   }
@@ -94,7 +95,7 @@ function anthropicTier(model: string = ANTHROPIC_MODEL): AgentModel | null {
   const client = anthropic
   return {
     provider: 'anthropic',
-    label: `Doop (${model})`,
+    label: `${brand.name} (${model})`,
     run: (req) => runAnthropicTurn(client, model, req),
   }
 }
@@ -149,14 +150,14 @@ function azureTier(): AgentModel | null {
   const apiKey = env.AZURE_OPENAI_API_KEY
   if (!endpoint || !deployment || !apiKey) {
     warnOnce(
-      '[doop-agent] DOOP_AGENT_PROVIDER=azure needs AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_DEPLOYMENT and AZURE_OPENAI_API_KEY — the free Doop Agent tier is off until all three are set.',
+      `[doop-agent] DOOP_AGENT_PROVIDER=azure needs AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_DEPLOYMENT and AZURE_OPENAI_API_KEY — the free ${brand.name} Agent tier is off until all three are set.`,
     )
     return null
   }
   const config = { endpoint, deployment, apiKey }
   return {
     provider: 'azure',
-    label: `Doop (${deployment})`,
+    label: `${brand.name} (${deployment})`,
     async run(req) {
       try {
         return await runAzureTurn(config, {

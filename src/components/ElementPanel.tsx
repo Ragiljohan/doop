@@ -103,8 +103,7 @@ import {
   StaticField,
 } from './ui/property-field'
 import { useT, type PlainMessageKey } from '../lib/i18n'
-
-const TAB_KEY = 'doop:element-panel-tab'
+const TAB_KEY = `doop:element-panel-tab`
 /* Only refreshes wait for streaming chunks to settle; a new selection is
    inspected immediately. */
 const INSPECT_DELAY_MS = 120

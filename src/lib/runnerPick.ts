@@ -10,8 +10,7 @@ import { api } from './api'
 import { useStore } from './store'
 import { parseRunnerPick, resolveRunnerPick, type AgentRunners, type RunnerPick } from '../../shared/agentRunner'
 import { useEffect } from 'react'
-
-export const RUNNER_PICK_KEY = 'doop:agent-runner'
+export const RUNNER_PICK_KEY = `doop:agent-runner`
 
 export function readStoredPick(storage: Pick<Storage, 'getItem'> | undefined): RunnerPick | null {
   try {

@@ -8,6 +8,7 @@ import { hasDurableCanvasAccess } from './access.ts'
 import { getTasks } from './actions.ts'
 import { agentActivityState } from '../shared/agentActivity.ts'
 import { apnsConfigured, sendLiveActivityPush } from './apns.ts'
+import { brand } from '../shared/brand.ts'
 
 export const liveActivitiesRouter = Router()
 
@@ -159,8 +160,8 @@ export async function deliverLiveActivities(send = sendLiveActivityPush) {
       const ended = !state || (state.phase !== 'working' && state.phase !== 'queued')
       // Revocations send no private canvas/task content; then discard the token.
       const content = state ?? {
-        canvasName: 'Doop',
-        agentName: 'Doop',
+        canvasName: brand.name,
+        agentName: brand.name,
         status: 'Activity ended',
         phase: 'finished',
         activeCount: 0,

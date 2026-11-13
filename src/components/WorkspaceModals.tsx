@@ -239,10 +239,15 @@ export function UpgradeModal({
             {error && <p className="mt-2 text-label text-accent-ink">{error}</p>}
             {session?.user.email && (
               <p className="mt-3 text-caption text-ink-faint">
-                {t('home.receipts', { email: session.user.email })}{' '}
-                <a className="font-semibold text-ink underline underline-offset-2" href={ENTERPRISE_CONTACT}>
-                  {t('home.talkToUs')}
-                </a>
+                {t('home.receipts', { email: session.user.email })}
+                {ENTERPRISE_CONTACT ? (
+                  <>
+                    {' '}
+                    <a className="font-semibold text-ink underline underline-offset-2" href={ENTERPRISE_CONTACT}>
+                      {t('home.talkToUs')}
+                    </a>
+                  </>
+                ) : null}
                 {t('home.receiptsEnd')}
               </p>
             )}
@@ -295,7 +300,7 @@ function PlanCard({ plan, interval, current }: { plan: Plan; interval: BillingIn
           </li>
         ))}
       </ul>
-      {plan.id === 'enterprise' && (
+      {plan.id === 'enterprise' && ENTERPRISE_CONTACT && (
         <a
           className="mt-auto flex items-center gap-1 pt-4 text-body font-semibold text-ink underline underline-offset-2"
           href={ENTERPRISE_CONTACT}

@@ -26,7 +26,7 @@ import {
   DropdownMenuTrigger,
 } from './ui/dropdown-menu'
 import { DesktopIcon, ExportIcon, GearIcon, HelpIcon, LogOutIcon, ShieldIcon } from './ui/icons'
-import { DOWNLOAD_URL, WEBSITE_URL } from '../lib/siteLinks'
+import { DOCS_URL, DOWNLOAD_URL, SOURCE_URL, WEBSITE_URL } from '../lib/siteLinks'
 
 /** The account menu the signed-in shell repeats on every page: in the rail
  *  and in the settings header. It lives here so they cannot drift apart. */
@@ -117,24 +117,32 @@ export function AccountMenu({
           </DropdownMenuItem>
         )}
         <DropdownMenuItem asChild>
-          <a href="/docs" target="_blank" rel="noopener noreferrer">
+          <a href={DOCS_URL} target="_blank" rel="noopener noreferrer">
             <HelpIcon size="rail" /> {t('shell.helpDocs')}
           </a>
         </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <a href={SOURCE_URL} target="_blank" rel="noopener noreferrer">
+            <ExportIcon size="rail" /> {t('shell.source')}
+          </a>
+        </DropdownMenuItem>
         {/* new tabs, which the desktop shell hands to the system browser
-            (initDesktopShell); the desktop app has nothing to download */}
-        {!isDesktopShell() && (
+            (initDesktopShell); the desktop app has nothing to download.
+            Hidden until brand config sets a download or website URL. */}
+        {!isDesktopShell() && DOWNLOAD_URL && (
           <DropdownMenuItem asChild>
             <a href={DOWNLOAD_URL} target="_blank" rel="noopener noreferrer">
               <DesktopIcon size="rail" /> {t('shell.desktopApp')}
             </a>
           </DropdownMenuItem>
         )}
-        <DropdownMenuItem asChild>
-          <a href={WEBSITE_URL} target="_blank" rel="noopener noreferrer">
-            <ExportIcon size="rail" /> {t('shell.website')}
-          </a>
-        </DropdownMenuItem>
+        {WEBSITE_URL && (
+          <DropdownMenuItem asChild>
+            <a href={WEBSITE_URL} target="_blank" rel="noopener noreferrer">
+              <ExportIcon size="rail" /> {t('shell.website')}
+            </a>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuSeparator />
         {/* the theme is one click from every page; picking one keeps the menu
             open so the change can be seen, and judged, before it closes */}

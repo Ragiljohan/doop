@@ -1,3 +1,4 @@
+import { brand } from '../shared/brand.ts'
 import { spawn } from 'node:child_process'
 import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
@@ -16,7 +17,7 @@ const cliResultSchema = z.object({ response: z.string().max(100_000), error: z.u
 type Result = { success: boolean; text: string }
 type Runner = (job: GeminiCloudJob, origin: string, signal: AbortSignal) => Promise<Result>
 
-/** Highest-precedence CLI settings. Only the run's Doop tools are available. */
+/** Highest-precedence CLI settings. Only this run's tools are available. */
 export function geminiWorkerSettings(job: GeminiCloudJob, origin: string) {
   return {
     security: {
@@ -32,9 +33,9 @@ export function geminiWorkerSettings(job: GeminiCloudJob, origin: string) {
     hooksConfig: { enabled: false },
     experimental: { enableAgents: false },
     telemetry: { enabled: false },
-    mcp: { allowed: ['doop'] },
+    mcp: { allowed: [brand.mcpName] },
     mcpServers: {
-      doop: {
+      [brand.mcpName]: {
         httpUrl: `${httpOrigin(origin)}/gemini-cloud/mcp/${job.id}`,
         headers: { Authorization: `Bearer ${job.token}` },
         trust: true,

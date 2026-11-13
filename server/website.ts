@@ -1,5 +1,6 @@
 import { importPage } from './importer.ts'
 import { WebsiteCaptureUnavailableError } from './websiteAccess.ts'
+import { brand } from '../shared/brand.ts'
 
 /**
  * Read-only viewer behind the resident and MCP view_website tools. It uses the
@@ -24,7 +25,7 @@ export interface WebsiteView {
 export async function viewWebsite(raw: string): Promise<WebsiteView> {
   const imported = await importPage(raw, { includePreview: true })
   const preview = imported.preview
-  if (!preview) throw new WebsiteCaptureUnavailableError('Doop could not render the acquired webpage HTML')
+  if (!preview) throw new WebsiteCaptureUnavailableError(`${brand.name} could not render the acquired webpage HTML`)
   return { title: imported.title, ...preview }
 }
 

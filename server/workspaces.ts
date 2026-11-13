@@ -13,6 +13,7 @@ import { notifyUsers } from './userEvents.ts'
 import { avatarUrl } from '../shared/avatar.ts'
 import { isBillingInterval, isWorkspaceActive } from '../shared/billing.ts'
 import type { BillingInterval, WorkspaceStatus } from '../shared/billing.ts'
+import { brand } from '../shared/brand.ts'
 import { isWorkspaceRole } from '../shared/types.ts'
 import type {
   WorkspaceDetail,
@@ -637,12 +638,12 @@ workspacesRouter.post('/:id/members', async (req, res) => {
     return res.json({ member })
   }
   if (!unknownEmailInvitesAllowed())
-    return res.status(404).json({ error: 'no doop account with that email — ask them to sign up first' })
+    return res.status(404).json({ error: `no ${brand.name} account with that email — ask them to sign up first` })
   const invite = await createInvite(ws.id, email, role, req.user!.id)
   if (mailerConfigured) {
     sendMail({
       to: email,
-      subject: `${req.user!.name} invited you to "${ws.name}" on doop`,
+      subject: `${req.user!.name} invited you to "${ws.name}" on ${brand.name}`,
       text: `${req.user!.name} invited you to the "${ws.name}" workspace on doop.\n\nCreate an account with this email address and you'll be in:\n\n${ORIGIN}/\n`,
     }).catch((err) => console.error('[workspaces] invite email failed', err))
   }

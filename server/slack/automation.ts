@@ -2,6 +2,7 @@ import type { SlackStep } from '../../shared/automations.ts'
 import { AutomationPullError } from '../extensions.ts'
 import { getInstallation } from './oauth.ts'
 import { postedMessage, slackApi, SlackError } from './client.ts'
+import { brand } from '../../shared/brand.ts'
 
 export async function postAutomationMessage(step: SlackStep, ownerId: string, context: string) {
   const installation = await getInstallation(ownerId)
@@ -25,7 +26,7 @@ export async function postAutomationMessage(step: SlackStep, ownerId: string, co
     if (error instanceof SlackError) {
       if (error.status === 409) throw new AutomationPullError(error.message, 'reconnect')
       if (['not_in_channel', 'channel_not_found', 'no_permission'].includes(error.code ?? ''))
-        throw new Error('Check the Slack channel ID and invite @Doop to that channel.', { cause: error })
+        throw new Error(`Check the Slack channel ID and invite @${brand.name} to that channel.`, { cause: error })
     }
     throw error
   }

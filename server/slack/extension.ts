@@ -5,6 +5,7 @@ import { disconnectAgent, startSlackWorker } from './jobs.ts'
 import { slackWebhookRouter } from './webhook.ts'
 import { SlackError } from './client.ts'
 import { postAutomationMessage } from './automation.ts'
+import { brand } from '../../shared/brand.ts'
 
 export const slackExtension: ServerExtension = {
   id: 'slack',
@@ -30,7 +31,7 @@ export const slackExtension: ServerExtension = {
         await finishInstall(userId, query.state ?? '', query.code ?? '')
         return '/integrations?slack=connected'
       } catch (error) {
-        const message = error instanceof SlackError ? error.message : 'Could not install Doop in Slack.'
+        const message = error instanceof SlackError ? error.message : `Could not install ${brand.name} in Slack.`
         return `/integrations?slackError=${encodeURIComponent(message)}`
       }
     },

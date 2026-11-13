@@ -1,5 +1,4 @@
 import { LAYER_TEXT_PROPERTIES, TEXT_FORMAT_COMMANDS, TEXT_STYLE_PROPERTIES } from './richText'
-
 /** Runs in FRAME_BOOTSTRAP's closure, sharing its active element and save path. */
 export const FRAME_TEXT_RUNTIME = `
   var textCommands = ${JSON.stringify(TEXT_FORMAT_COMMANDS)}

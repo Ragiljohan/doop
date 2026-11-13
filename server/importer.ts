@@ -15,6 +15,7 @@ import {
 } from './publicUrl.ts'
 import { navigateWebsitePage, WebsiteCaptureUnavailableError } from './websiteAccess.ts'
 import { pruneUnusedCss } from './cssPrune.ts'
+import { brand } from '../shared/brand.ts'
 import {
   MAX_DISCOVERY_BYTES,
   MAX_FRAME_HTML_BYTES,
@@ -30,8 +31,7 @@ import {
  * frames so they stay editable (WYSIWYG and agents reject script-bearing frames).
  */
 
-const UA =
-  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36 DoopImporter/1.0'
+const UA = `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36 ${brand.name}Importer/1.0`
 const VIEWPORT_WIDTH = 1280
 const MAX_HEIGHT = 6000
 const MAX_PREVIEW_HEIGHT = 4000
@@ -404,8 +404,8 @@ type CapturedCss = { ok: true; css: string } | { ok: false; reason: 'oversized' 
 const OVERSIZED: CapturedCss = { ok: false, reason: 'oversized' }
 const UNREACHABLE: CapturedCss = { ok: false, reason: 'unreachable' }
 
-const CSS_OVERSIZED_MESSAGE = `This page's stylesheets are larger than Doop's ${MAX_IMPORT_CSS_FETCH_BYTES / 1_000_000} MB import limit`
-const CSS_PRUNED_OVERSIZED_MESSAGE = `This page needs more than Doop's ${MAX_IMPORT_CSS_BYTES / 1_000_000} MB CSS import limit even after unused styles are removed`
+const CSS_OVERSIZED_MESSAGE = `This page's stylesheets are larger than ${brand.name}'s ${MAX_IMPORT_CSS_FETCH_BYTES / 1_000_000} MB import limit`
+const CSS_PRUNED_OVERSIZED_MESSAGE = `This page needs more than ${brand.name}'s ${MAX_IMPORT_CSS_BYTES / 1_000_000} MB CSS import limit even after unused styles are removed`
 const CSS_UNREACHABLE_MESSAGE = 'The webpage HTML was captured, but one or more stylesheets could not be fully loaded'
 
 /** Fetch a stylesheet within the bytes still available for the page's CSS,
@@ -524,7 +524,7 @@ export async function importPage(rawUrl: string, options: { includePreview?: boo
           timeout: 20_000,
         })
       } catch {
-        throw new WebsiteCaptureUnavailableError('Context.dev returned HTML that Doop could not render')
+        throw new WebsiteCaptureUnavailableError(`Context.dev returned HTML that ${brand.name} could not render`)
       }
     } else {
       await navigateWebsitePage(page, requestedUrl.href, { waitUntil: 'networkidle2', timeout: 30_000 })
@@ -719,7 +719,7 @@ export async function importPage(rawUrl: string, options: { includePreview?: boo
         }
       } catch (error) {
         if (error instanceof WebsiteCaptureUnavailableError) throw error
-        throw new WebsiteCaptureUnavailableError('Doop could not render a local preview of the webpage')
+        throw new WebsiteCaptureUnavailableError(`${brand.name} could not render a local preview of the webpage`)
       } finally {
         await previewIsolated.close()
       }
@@ -734,7 +734,7 @@ export async function importPage(rawUrl: string, options: { includePreview?: boo
     }
   } catch (error) {
     if (error instanceof WebsiteCaptureUnavailableError) throw error
-    throw new WebsiteCaptureUnavailableError('Doop could not finish rendering the webpage HTML')
+    throw new WebsiteCaptureUnavailableError(`${brand.name} could not finish rendering the webpage HTML`)
   } finally {
     await isolated.close()
   }

@@ -22,8 +22,7 @@ import { NumberField, PropertyScrubContext } from './ui/property-field'
 import { normalizeRotation } from '../../shared/frameRotation'
 import { MIN_FRAME_SIZE } from '../lib/frameResize'
 import { t as translate, useT } from '../lib/i18n'
-
-const HTML_OPEN_KEY = 'doop:inspector-html'
+const HTML_OPEN_KEY = `doop:inspector-html`
 
 /* the rail's filled buttons: a grey well, 28px, tall enough to hit on a phone */
 const fillBtn = 'h-7 rounded-[7px] bg-sub px-2 text-[12px] font-normal text-ink hover:bg-paper-deep max-md:min-h-10'

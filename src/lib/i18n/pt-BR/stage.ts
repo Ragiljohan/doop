@@ -115,7 +115,7 @@ export const stage: Catalog['stage'] = {
   waitingFor: 'aguardando {name}',
   agentDidNotFinish: 'O agente não terminou.',
   retry: 'Tentar de novo',
-  replyAskAgent: 'Responder… (@doop para chamar o agente)',
+  replyAskAgent: 'Responder… (@%%APP%% para chamar o agente)',
   replyEllipsis: 'Responder…',
   replyFailed: 'Essa resposta não foi enviada — talvez a conversa já esteja resolvida. Tente de novo.',
   resolve: 'Resolver',
@@ -133,7 +133,7 @@ export const stage: Catalog['stage'] = {
   resolvedBy: 'resolvido por {name}',
   replies: { one: '{count} resposta', other: '{count} respostas' },
   resolvedReplies: 'Respostas resolvidas',
-  replyPanelPlaceholder: 'Responder… @doop para chamar o agente',
+  replyPanelPlaceholder: 'Responder… @%%APP%% para chamar o agente',
   replyTo: 'Responder a {name}',
   markResolved: 'Marcar esta conversa como resolvida',
 }

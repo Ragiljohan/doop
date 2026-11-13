@@ -12,6 +12,7 @@ import {
 } from './openaiAgent.ts'
 import type { StopReason, TurnBlock, TurnRequest, TurnResult } from './openaiAgent.ts'
 import type { CustomTokenParam } from '../shared/customProvider.ts'
+import { brand } from '../shared/brand.ts'
 
 /**
  * Runs one Doop Agent turn against an OpenAI-compatible Chat Completions
@@ -77,7 +78,7 @@ export function openrouterConfig(apiKey: string, model: string, vision: boolean)
   return {
     url: OPENROUTER_URL,
     /* the attribution headers are how OpenRouter credits the calling app */
-    headers: { Authorization: `Bearer ${apiKey}`, 'HTTP-Referer': APP_ORIGIN, 'X-Title': 'Doop' },
+    headers: { Authorization: `Bearer ${apiKey}`, 'HTTP-Referer': APP_ORIGIN, 'X-Title': brand.name },
     model,
     label: 'OpenRouter',
     vision,
@@ -121,7 +122,7 @@ export function kimiCodeConfig(apiKey: string, model: string, vision: boolean): 
     url: KIMI_CODE_URL,
     /* Kimi Code's terms ask every tool to name itself truthfully; a disguised
        client can cost the member their plan */
-    headers: { Authorization: `Bearer ${apiKey}`, 'User-Agent': `Doop/${packageJson.version}` },
+    headers: { Authorization: `Bearer ${apiKey}`, 'User-Agent': `${brand.name}/${packageJson.version}` },
     model,
     label: 'Kimi Code',
     vision,

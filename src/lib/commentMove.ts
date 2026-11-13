@@ -5,7 +5,6 @@ import { FRAME_COMMENT_SELECTOR, sameCommentAnchor, type CommentAnchorInput } fr
 import { useStore } from './store'
 import { api } from './api'
 import { requestFrame } from './frameBridge'
-
 /**
  * Moving a comment pin. The pin's pointer gesture lives in CommentPin; this
  * module turns the drop point into the thread's new anchor: the element
@@ -88,7 +87,7 @@ export async function resolveCommentDrop(
 }
 
 async function probeFrame(frameId: string, x: number, y: number): Promise<CommentDropHit | null> {
-  const reply = await requestFrame(frameId, 'doop:probe', { x, y })
+  const reply = await requestFrame(frameId, `doop:probe`, { x, y })
   const hit = reply?.hit as CommentDropHit | null | undefined
   if (!hit || typeof hit.selector !== 'string') return null
   return {

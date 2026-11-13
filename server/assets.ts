@@ -1,3 +1,4 @@
+import { brand } from '../shared/brand.ts'
 import { parse, type DefaultTreeAdapterTypes as Tree } from 'parse5'
 import { nanoid } from 'nanoid'
 import { asc, eq, gt, inArray } from 'drizzle-orm'
@@ -219,7 +220,7 @@ export async function fetchRemote(rawUrl: string): Promise<Buffer> {
   for (let hop = 0; hop < 4; hop++) {
     const res = await fetchPinnedPublicUrl(url, {
       redirect: 'manual',
-      headers: { accept: 'image/*,*/*;q=0.8', 'user-agent': 'DoopAssets/1.0' },
+      headers: { accept: 'image/*,*/*;q=0.8', 'user-agent': `${brand.name}Assets/1.0` },
       signal: AbortSignal.timeout(20_000),
     })
     if (res.status >= 300 && res.status < 400) {

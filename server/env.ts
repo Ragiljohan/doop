@@ -9,6 +9,7 @@ import {
   DEFAULT_OPENROUTER_MODEL,
 } from '../shared/modelMenu.ts'
 import { FALLBACK_LOCALE, LOCALES } from '../shared/locales.ts'
+import { brand } from '../shared/brand.ts'
 
 /**
  * Every environment variable the server reads, declared once with its type
@@ -146,7 +147,7 @@ const schema = {
   SMTP_USER: str({ default: undefined }),
   SMTP_PASS: str({ default: undefined }),
   SMTP_SECURE: bool({ default: false }),
-  EMAIL_FROM: str({ default: 'doop <no-reply@localhost>' }),
+  EMAIL_FROM: str({ default: brand.emailFrom }),
 
   /* ------------------------------------------------------ webhooks */
   WEBHOOK_ALLOW_PRIVATE_URLS: bool({ default: false }),
@@ -177,7 +178,7 @@ const schema = {
   CHATGPT_OAUTH_CLIENT_ID: str({ default: 'app_EMoamEEZ73f0CkXaXp7hrann' }),
   CHATGPT_OAUTH_REDIRECT_URI: str({ default: 'http://localhost:1455/auth/callback' }),
   CHATGPT_OAUTH_CALLBACK_PORT: port({ default: 1455 }),
-  CHATGPT_AUTH_USER_AGENT: str({ default: 'doop/0.1 (+https://doop.design)' }),
+  CHATGPT_AUTH_USER_AGENT: str({ default: `${brand.senderName}/0.1 (+${brand.publicUrl || 'local'})` }),
   CHATGPT_DEVICE_URL: str({ default: undefined }),
   CHATGPT_RESPONSES_URL: str({ default: 'https://chatgpt.com/backend-api/codex/responses' }),
   /* the Codex backend's model catalog; it answers for a Codex CLI version it

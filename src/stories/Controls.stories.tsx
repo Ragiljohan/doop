@@ -11,6 +11,7 @@ import { Switch } from '@/components/ui/switch'
 import { StepSlider } from '@/components/ui/step-slider'
 import { Toolbar, ToolbarControl, ToolbarDot } from '@/components/ui/toolbar'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { brand } from '../../shared/brand'
 import {
   ArrowUpIcon,
   CommentIcon,
@@ -125,7 +126,7 @@ export const KeyCaps: Story = {
       <span className="flex items-center gap-1">
         <Kbd>⌘</Kbd>
         <Kbd>/</Kbd>
-        <span className="ml-1.5">Ask Doop</span>
+        <span className="ml-1.5">{`Ask ${brand.name}`}</span>
       </span>
       <span className="flex items-center gap-1">
         <Kbd>Esc</Kbd>

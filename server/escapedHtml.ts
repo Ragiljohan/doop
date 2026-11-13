@@ -1,3 +1,4 @@
+import { brand } from '../shared/brand.ts'
 /**
  * Agents sometimes send HTML-escaped markup (`&lt;!doctype html&gt;…`) where raw
  * tags belong. Stored verbatim, the frame renders those entities as text and the
@@ -33,5 +34,4 @@ export function repairEscapedHtml(html: string): string {
 }
 
 /** Told to the agent whenever a write was repaired, so it stops escaping. */
-export const ESCAPED_HTML_NOTE =
-  'That HTML arrived escaped (&lt;div&gt; where <div> belongs), which renders as visible source text on the canvas. Doop decoded it so the frame still shows a design — send raw markup from here on: these tools take HTML exactly as written, no escaping.'
+export const ESCAPED_HTML_NOTE = `That HTML arrived escaped (&lt;div&gt; where <div> belongs), which renders as visible source text on the canvas. ${brand.name} decoded it so the frame still shows a design — send raw markup from here on: these tools take HTML exactly as written, no escaping.`

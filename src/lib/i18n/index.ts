@@ -1,3 +1,4 @@
+import { applyBrand } from '../../../shared/brand'
 import { en } from './en'
 import { ptBR } from './pt-BR'
 import { getLocale, useLocale, type Locale } from './locale'
@@ -78,8 +79,9 @@ function pick(message: Message, locale: Locale, vars: Vars | undefined): string 
 }
 
 function fill(text: string, vars: Vars | undefined): string {
-  if (!vars) return text
-  return text.replace(/\{(\w+)\}/g, (match, name: string) => (name in vars ? String(vars[name]) : match))
+  const branded = applyBrand(text)
+  if (!vars) return branded
+  return branded.replace(/\{(\w+)\}/g, (match, name: string) => (name in vars ? String(vars[name]) : match))
 }
 
 /** The message for `key` in `locale`, falling back to English and then to the

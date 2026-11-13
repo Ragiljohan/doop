@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
 import { ClockTile, MetaTile } from '@/components/AutomateShell'
 import { FrameThumb } from '@/components/FramePreview'
+import { brand } from '../../shared/brand'
 
 const meta = { title: 'Primitives/Surfaces' } satisfies Meta
 export default meta
@@ -27,9 +28,10 @@ export const Cards: Story = {
     <div className="flex max-w-[640px] flex-col gap-4">
       <Card>
         <CardHeader>
-          <CardTitle>Doop Agent</CardTitle>
+          <CardTitle>{`${brand.name} Agent`}</CardTitle>
           <CardDescription>
-            Choose how the Doop Agent runs on your canvases: a connected model account or Claude CLI on your desktop.
+            {`Choose how the ${brand.name} Agent runs on your canvases: a connected model account or Claude CLI on your desktop.
+          `}
           </CardDescription>
         </CardHeader>
         <CardBody>
@@ -110,7 +112,7 @@ export const Notices: Story = {
       </div>
       <div className="flex flex-wrap items-center gap-2">
         <Badge shape="pill">kgoedecke/doop@main</Badge>
-        <Badge shape="pill">doop.design</Badge>
+        <Badge shape="pill">{brand.publicHost}</Badge>
         <Badge shape="pill">A Figma file with a name long enough to truncate at the pill’s limit</Badge>
       </div>
       <div className="flex flex-wrap items-center gap-4">
@@ -223,8 +225,8 @@ export const Loading: Story = {
 export const Code: Story = {
   render: () => (
     <div className="flex max-w-[520px] flex-col gap-3">
-      <CodeBlock text="claude mcp add --transport http doop https://doop.design/mcp" />
-      <CodeBlock density="rail" text="claude mcp add --transport http doop https://doop.design/mcp" />
+      <CodeBlock text={`claude mcp add --transport http ${brand.name} ${brand.publicUrl}/mcp`} />
+      <CodeBlock density="rail" text={`claude mcp add --transport http ${brand.name} ${brand.publicUrl}/mcp`} />
     </div>
   ),
 }

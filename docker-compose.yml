@@ -1,4 +1,8 @@
 # One-command self-host: `docker compose up` → http://localhost:4400
+# The image build runs `bun run apply-brand`, so the name and logo come from
+# brand/brand.config.json. The public host is not decided; behind a reverse
+# proxy set BETTER_AUTH_URL to that origin (for example https://design.ragil.work)
+# and EMAIL_FROM to a real sender. The defaults are the generic name "Design".
 # Set BETTER_AUTH_SECRET (any long random string) before running in earnest:
 #   BETTER_AUTH_SECRET=$(openssl rand -hex 32) docker compose up -d
 services:

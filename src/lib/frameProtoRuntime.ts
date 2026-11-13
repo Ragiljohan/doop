@@ -1,5 +1,4 @@
 import { parseInteractions, PROTO_SELECTOR } from '../../shared/prototype'
-
 /**
  * Prototype triggers, inside the sandboxed frame (spliced into
  * FRAME_BOOTSTRAP's scope, so `editing`, `cssPath` and `designRect` are the
