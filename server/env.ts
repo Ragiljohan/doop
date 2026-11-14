@@ -140,6 +140,8 @@ const schema = {
   APPLE_CLIENT_SECRET: str({ default: undefined }),
   APPLE_APP_BUNDLE_IDENTIFIER: str({ default: undefined }),
   APPLE_JWKS_URL: str({ default: 'https://appleid.apple.com/auth/keys' }),
+  TURNSTILE_SITE_KEY: str({ default: undefined }),
+  TURNSTILE_SECRET_KEY: str({ default: undefined }),
 
   /* --------------------------------------------------------- email */
   SMTP_HOST: str({ default: undefined }),

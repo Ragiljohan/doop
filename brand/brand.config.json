@@ -10,6 +10,7 @@
   "emailFrom": "Design <no-reply@localhost>",
   "publicUrl": "",
   "footer": "",
+  "showSourceLink": false,
   "links": {
     "source": "https://github.com/Ragiljohan/doop",
     "upstream": "https://github.com/kgoedecke/doop",

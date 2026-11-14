@@ -114,6 +114,11 @@ describe('email/password sign-up off', () => {
     })
     expect(signup.status).toBe(403)
     expect((await signup.json()).code).toBe('SIGNUP_DISABLED')
+    /* the same endpoint spelled the way a lenient router might still match */
+    for (const path of ['/api/auth/Sign-Up/Email', '/api/auth/sign-up/email/', '/api/auth//sign-up//email']) {
+      const res = await newcomer.post(path, { email: 'late@test.dev', password: 'password12345', name: 'Late' })
+      expect(res.status, path).not.toBe(200)
+    }
     expect(await (await newcomer.post('/api/account-exists', { email: 'late@test.dev' })).json()).toEqual({
       exists: false,
     })

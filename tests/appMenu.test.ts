@@ -22,7 +22,6 @@ function stubHost(overrides: Partial<ActionHost> = {}): ActionHost {
     openAgent: vi.fn(),
     openShortcuts: vi.fn(),
     goToFiles: vi.fn(),
-    openDocs: vi.fn(),
     contactSupport: vi.fn(),
     openFind: vi.fn(),
     findStep: vi.fn(),
@@ -97,14 +96,8 @@ describe('nativeMenus', () => {
     const [edit, help] = ['edit', 'help'].map((id) => nativeMenus().find((m) => m.id === id)!)
     expect(items(edit!).map((i) => i.id)).not.toContain('undo')
     expect(items(edit!).map((i) => i.id)).not.toContain('redo')
-    expect(help!.items.map((i) => i?.id ?? null)).toEqual([
-      'palette',
-      null,
-      'shortcuts',
-      null,
-      'docs',
-      'customer-support',
-    ])
+    /* no docs in this build, and no support chat without PostHog's key */
+    expect(help!.items.map((i) => i?.id ?? null)).toEqual(['palette', null, 'shortcuts'])
   })
 
   it('marks toggles as checkable', () => {

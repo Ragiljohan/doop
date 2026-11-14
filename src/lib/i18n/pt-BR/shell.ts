@@ -6,7 +6,6 @@ export const shell: Catalog['shell'] = {
   personalPlan: 'Plano pessoal',
   settings: 'Configurações',
   admin: 'Admin',
-  helpDocs: 'Ajuda e documentação',
   desktopApp: 'Baixar o app para desktop',
   website: 'Site %%APP%%',
   source: 'Fonte',

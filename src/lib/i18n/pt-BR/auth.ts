@@ -52,6 +52,9 @@ export const auth: Catalog['auth'] = {
   redirectingTo: 'Levando você para {provider}…',
   signInAnotherWay: 'Entrar de outra forma',
   signupDisabled: 'O cadastro com e-mail e senha está desligado nesta instância.',
+  captchaFailed: 'Conclua a verificação de segurança e tente de novo.',
+  captchaUnavailable:
+    'A verificação de segurança não carregou. Verifique sua conexão ou desligue um bloqueador de conteúdo e recarregue.',
   browserSignInNotice: 'Conclua o acesso no navegador — o %%APP%% conecta você aqui assim que você voltar.',
   verificationSent: 'E-mail de verificação enviado — confira sua caixa de entrada.',
   resetLinkSent: 'Se existir uma conta com esse e-mail, um link de redefinição já está a caminho.',

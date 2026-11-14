@@ -4,10 +4,10 @@ import { useOpenThreadCount } from '../lib/comments'
 import { navigate } from '../App'
 import { cn } from '@/lib/utils'
 import { Tooltip } from './ui/tooltip'
-import { Toolbar, ToolbarButton, ToolbarControl, ToolbarDot } from './ui/toolbar'
+import { Toolbar, ToolbarControl, ToolbarDot } from './ui/toolbar'
 import { BookOpenIcon, CommentIcon, GearIcon, HelpIcon, PulseIcon, SlidersIcon, SparkIcon } from './ui/icons'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu'
 import { openSupportChat } from '../lib/posthog'
+import { supportChatConfigured } from '../lib/supportChat'
 import { PresenceFace } from './PeerAvatars'
 import { useT } from '../lib/i18n'
 
@@ -91,28 +91,12 @@ export function SideRail({
             <GearIcon />
           </ToolbarControl>
         )}
-        <DropdownMenu>
-          <Tooltip label={t('canvas.help')} side="left">
-            <DropdownMenuTrigger asChild>
-              <ToolbarButton
-                aria-label={t('canvas.help')}
-                className="data-[state=open]:bg-paper-deep data-[state=open]:text-ink"
-              >
-                <HelpIcon />
-              </ToolbarButton>
-            </DropdownMenuTrigger>
-          </Tooltip>
-          <DropdownMenuContent side="left" align="end" width="sm">
-            <DropdownMenuItem asChild>
-              <a href="/docs" target="_blank" rel="noopener noreferrer">
-                <BookOpenIcon /> {t('canvas.docs')}
-              </a>
-            </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => openSupportChat()}>
-              <CommentIcon /> {t('canvas.contactSupport')}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {/* help is the support chat alone: this build has no docs to link */}
+        {supportChatConfigured && (
+          <ToolbarControl label={t('canvas.contactSupport')} onClick={() => openSupportChat()}>
+            <HelpIcon />
+          </ToolbarControl>
+        )}
         {!guest && (
           <Tooltip label={t('canvas.youAre', { name: me.name })} side="left">
             <button

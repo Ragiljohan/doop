@@ -25,8 +25,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu'
-import { DesktopIcon, ExportIcon, GearIcon, HelpIcon, LogOutIcon, ShieldIcon } from './ui/icons'
-import { DOCS_URL, DOWNLOAD_URL, SOURCE_URL, WEBSITE_URL } from '../lib/siteLinks'
+import { DesktopIcon, ExportIcon, GearIcon, LogOutIcon, ShieldIcon } from './ui/icons'
+import { DOWNLOAD_URL, SOURCE_URL, WEBSITE_URL } from '../lib/siteLinks'
 
 /** The account menu the signed-in shell repeats on every page: in the rail
  *  and in the settings header. It lives here so they cannot drift apart. */
@@ -116,16 +116,13 @@ export function AccountMenu({
             <ShieldIcon size="rail" /> {t('shell.admin')}
           </DropdownMenuItem>
         )}
-        <DropdownMenuItem asChild>
-          <a href={DOCS_URL} target="_blank" rel="noopener noreferrer">
-            <HelpIcon size="rail" /> {t('shell.helpDocs')}
-          </a>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <a href={SOURCE_URL} target="_blank" rel="noopener noreferrer">
-            <ExportIcon size="rail" /> {t('shell.source')}
-          </a>
-        </DropdownMenuItem>
+        {SOURCE_URL && (
+          <DropdownMenuItem asChild>
+            <a href={SOURCE_URL} target="_blank" rel="noopener noreferrer">
+              <ExportIcon size="rail" /> {t('shell.source')}
+            </a>
+          </DropdownMenuItem>
+        )}
         {/* new tabs, which the desktop shell hands to the system browser
             (initDesktopShell); the desktop app has nothing to download.
             Hidden until brand config sets a download or website URL. */}

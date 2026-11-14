@@ -5,7 +5,6 @@ export const shell = {
   personalPlan: 'Personal plan',
   settings: 'Settings',
   admin: 'Admin',
-  helpDocs: 'Help & docs',
   desktopApp: 'Get desktop app',
   website: '%%APP%% website',
   source: 'Source',

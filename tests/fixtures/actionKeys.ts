@@ -17,7 +17,6 @@ export function installActionKeys() {
     openAgent: noop,
     openShortcuts: noop,
     goToFiles: noop,
-    openDocs: noop,
     contactSupport: noop,
     openFind: noop,
     findStep: noop,
