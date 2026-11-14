@@ -5,6 +5,7 @@ import {
   loadGoogleConfig,
   loadMicrosoftConfig,
   loadOidcConfig,
+  loadTurnstileConfig,
   loginProvidersConfig,
   oidcPublicConfig,
 } from '../server/auth.ts'
@@ -29,6 +30,8 @@ const OIDC_VARS = [
   'APPLE_CLIENT_ID',
   'APPLE_CLIENT_SECRET',
   'APPLE_APP_BUNDLE_IDENTIFIER',
+  'TURNSTILE_SITE_KEY',
+  'TURNSTILE_SECRET_KEY',
 ] as const
 
 /* whatever this shell exports for the providers must not leak into the cases */
@@ -273,5 +276,28 @@ describe('loadAppleConfig', () => {
     stubEnv('APPLE_APP_BUNDLE_IDENTIFIER', 'design.doop.ios')
 
     expect(loginProvidersConfig()).toMatchObject({ apple: true, appleNative: true })
+  })
+})
+
+describe('loadTurnstileConfig', () => {
+  it('returns null when neither key is set, and the client sees no site key', () => {
+    expect(loadTurnstileConfig()).toBeNull()
+    expect(loginProvidersConfig()).not.toHaveProperty('turnstileSiteKey')
+  })
+
+  it('refuses to boot with only one key', () => {
+    stubEnv('TURNSTILE_SITE_KEY', 'site-key')
+    expect(() => loadTurnstileConfig()).toThrow(/TURNSTILE_SITE_KEY and TURNSTILE_SECRET_KEY/)
+    stubEnv('TURNSTILE_SITE_KEY', undefined)
+    stubEnv('TURNSTILE_SECRET_KEY', 'a-secret')
+    expect(() => loadTurnstileConfig()).toThrow(/TURNSTILE_SITE_KEY and TURNSTILE_SECRET_KEY/)
+  })
+
+  it('hands the client the site key and never the secret', () => {
+    stubEnv('TURNSTILE_SITE_KEY', 'site-key')
+    stubEnv('TURNSTILE_SECRET_KEY', 'a-secret')
+    expect(loadTurnstileConfig()).toEqual({ siteKey: 'site-key', secretKey: 'a-secret' })
+    expect(loginProvidersConfig()).toMatchObject({ turnstileSiteKey: 'site-key' })
+    expect(JSON.stringify(loginProvidersConfig())).not.toContain('a-secret')
   })
 })

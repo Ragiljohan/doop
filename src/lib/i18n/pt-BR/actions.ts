@@ -140,7 +140,6 @@ export const actions: Catalog['actions'] = {
 
   /* Help */
   keyboardShortcuts: 'Atalhos de teclado',
-  docs: 'Documentação',
   customerSupport: 'Suporte ao cliente',
   shortcutsSearch: 'Buscar atalhos',
   shortcutsEmpty: 'Nenhum atalho corresponde a “{query}”',

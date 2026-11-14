@@ -2,7 +2,7 @@ import { env } from './env.ts'
 import { betterAuth } from 'better-auth'
 import { APIError } from 'better-auth/api'
 import { eq, inArray, or, isNull, ne, and, sql } from 'drizzle-orm'
-import { admin, mcp, genericOAuth, oneTimeToken } from 'better-auth/plugins'
+import { admin, captcha, mcp, genericOAuth, oneTimeToken } from 'better-auth/plugins'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { db } from './db/index.ts'
 import * as authSchema from './db/auth-schema.ts'
@@ -165,6 +165,27 @@ function loadOAuthClient(prefix: 'GOOGLE' | 'MICROSOFT' | 'APPLE', label: string
   return { clientId: clientId!, clientSecret: clientSecret! }
 }
 
+export interface TurnstileConfig {
+  siteKey: string
+  secretKey: string
+}
+
+/**
+ * Cloudflare Turnstile in front of the email/password forms (sign-in,
+ * sign-up, password reset). Same all-or-nothing rule as the providers: both
+ * keys turn it on, neither leaves it off, one alone refuses to boot rather
+ * than locking every account out of a form that can never pass.
+ */
+export function loadTurnstileConfig(): TurnstileConfig | null {
+  const siteKey = env.TURNSTILE_SITE_KEY
+  const secretKey = env.TURNSTILE_SECRET_KEY
+  if (!siteKey && !secretKey) return null
+  if (!siteKey || !secretKey) {
+    throw new Error('TURNSTILE_SITE_KEY and TURNSTILE_SECRET_KEY must both be set to enable Turnstile')
+  }
+  return { siteKey, secretKey }
+}
+
 /** Env-gated "Sign in with Google", alongside email/password and OIDC SSO. */
 export function loadGoogleConfig(): OAuthClient | null {
   return loadOAuthClient('GOOGLE', 'Google')
@@ -251,14 +272,18 @@ export function loginProvidersConfig(): {
   apple: boolean
   /** the iOS app's native Sign in with Apple */
   appleNative: boolean
+  /** Cloudflare Turnstile's public site key, when the email forms need it */
+  turnstileSiteKey?: string
 } {
   const apple = loadAppleConfig()
+  const turnstile = loadTurnstileConfig()
   return {
     ...oidcPublicConfig(),
     google: loadGoogleConfig() !== null,
     microsoft: loadMicrosoftConfig() !== null,
     apple: apple?.web != null,
     appleNative: apple?.appBundleIdentifier != null,
+    ...(turnstile ? { turnstileSiteKey: turnstile.siteKey } : {}),
   }
 }
 
@@ -365,6 +390,7 @@ function buildAuth() {
   const google = loadGoogleConfig()
   const microsoft = loadMicrosoftConfig()
   const apple = loadAppleConfig()
+  const turnstile = loadTurnstileConfig()
   /* BETTER_AUTH_SECRET and BETTER_AUTH_URL are required in production; a
      missing one fails at boot in server/env.ts */
   const prod = env.isProduction
@@ -543,6 +569,9 @@ function buildAuth() {
          session's cookie. Single use, hashed at rest, two minutes to live —
          it travels through a doop:// URL that lands in browser history. */
       oneTimeToken({ storeToken: 'hashed', expiresIn: 2 }),
+      /* Turnstile: the email sign-in, sign-up and password-reset calls must
+         carry a fresh token in x-captcha-response (src/pages/AuthPage.tsx). */
+      ...(turnstile ? [captcha({ provider: 'cloudflare-turnstile', secretKey: turnstile.secretKey })] : []),
       ...(oidc
         ? [
             genericOAuth({

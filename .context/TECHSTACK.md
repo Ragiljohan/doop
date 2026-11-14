@@ -761,9 +761,12 @@ data-doop-webfonts>` for the roster families the frame names and does not load i
   Tests: `accountDeletion.test.ts`, `deleteAccount.test.tsx`.
 
 - Sign-in policy (`shared/instanceSettings.ts`, `server/instanceSettings.ts`): instance admins set,
-  in Admin → Sign-in, whether visitors may sign up with email and password (off hides the form and
-  the `/api/auth/*` mount refuses `sign-up/email` with `SIGNUP_DISABLED`; existing accounts still
-  sign in, provider sign-ups are untouched), whether signed-out visitors go straight to the OIDC
+  in Admin → Sign-in, whether visitors may sign up with email and password (off hides the form,
+  turns a sign-up request (a guest's banner, `initialMode`) into the sign-in form, drops the guest
+  banner's Sign up button (`useLoginConfig`, `src/lib/loginConfig.ts`, which offers nothing optional
+  until the server answers) and the `/api/auth/*` mount refuses `sign-up/email`, any case or slash
+  spelling, with `SIGNUP_DISABLED`; existing accounts still sign in, provider sign-ups are
+  untouched), whether signed-out visitors go straight to the OIDC
   provider (`AuthPage` starts the round trip on mount; never after a provider error, under
   `?manual=1`, or in the desktop shell), and a default workspace every new account joins as a member
   (`joinDefaultWorkspace`, in the user-create hook, or on verification when SMTP is on, like
@@ -773,6 +776,22 @@ data-doop-webfonts>` for the roster families the frame names and does not load i
   refused until an admin has signed in through SSO, so a provider nobody has proven cannot lock the
   instance out. Env keeps secrets and provider wiring only. Tests: `instanceSettings.test.ts`, the
   policy cases in `authFormBrowser.test.ts`.
+
+- Turnstile (`loadTurnstileConfig` in `server/auth.ts`, `src/components/Turnstile.tsx`):
+  `TURNSTILE_SITE_KEY` + `TURNSTILE_SECRET_KEY` (both or neither, one alone refuses to boot) add
+  better-auth's `captcha` plugin (Cloudflare Turnstile), which refuses email sign-in, sign-up and
+  `request-password-reset` without a verified `x-captcha-response` header (`MISSING_RESPONSE` /
+  `VERIFICATION_FAILED`). `GET /api/oidc-config` hands the page `turnstileSiteKey`; `AuthPage`
+  renders the widget (Cloudflare's script loaded once, explicit render, the app's theme and
+  language), keeps submit off until it has a token and remounts it after every attempt, since a
+  token is single use. The iOS app's email sign-in cannot solve it. Tests: `turnstile.test.ts`, the
+  Turnstile cases in `oidcConfig.test.ts` and `authFormBrowser.test.ts`.
+
+- White-label chrome (`brand/brand.config.json`): `showSourceLink: false` drops the "Source" link
+  from the sign-in card, the rail, the account menu and a guest's banner (and the matching sentence
+  from the generated NOTICE). There is no in-app docs site: the account menu has no Help & docs,
+  the editor's Help menu has no Docs, and Contact support (the rail's help button and the Help
+  menu) shows only in a build with PostHog's key (`src/lib/supportChat.ts`).
 
 - MCP OAuth (better-auth `mcp()` plugin): 1h access tokens, 30-day refresh tokens
   (`MCP_REFRESH_TOKEN_TTL_S` in `server/mcpTokens.ts`; the plugin neither rotates nor revokes

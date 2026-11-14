@@ -18,7 +18,8 @@ import { Input } from '../components/ui/input'
 import { Field } from '../components/ui/field'
 import { Callout } from '../components/ui/callout'
 import { useT, type PlainMessageKey } from '../lib/i18n'
-import type { LoginPolicy } from '../../shared/instanceSettings'
+import { useLoginConfig, type LoginConfig } from '../lib/loginConfig'
+import { Turnstile } from '../components/Turnstile'
 
 /* If login interrupted an MCP OAuth authorize redirect, send the browser
    back into the flow so the agent connection completes. */
@@ -157,39 +158,9 @@ function ssoRedirects(provider: DesktopSignInProvider): ProviderRedirects {
   }
 }
 
-/** Matches GET /api/oidc-config: server/auth.ts loginProvidersConfig plus
- *  the instance's sign-in policy (shared/instanceSettings.ts loginPolicy). */
-interface OidcClientConfig extends LoginPolicy {
-  enabled: boolean
-  displayName?: string
-  google: boolean
-  microsoft: boolean
-  /** the browser "Sign in with Apple" (the iOS app's native one is appleNative, not shown here) */
-  apple: boolean
-}
-
-const UNCONFIGURED: OidcClientConfig = {
-  enabled: false,
-  google: false,
-  microsoft: false,
-  apple: false,
-  emailPasswordSignup: true,
-  ssoAutoRedirect: false,
-}
-
-/* The client bundle is static and shared across self-hosted deploys — it
-   can't know at build time whether the operator configured SSO, so it asks
-   the server. See server/auth.ts loginProvidersConfig. */
-function useOidcConfig(): OidcClientConfig {
-  const [config, setConfig] = useState<OidcClientConfig>(UNCONFIGURED)
-  useEffect(() => {
-    fetch('/api/oidc-config')
-      .then((res) => (res.ok ? res.json() : UNCONFIGURED))
-      .then((body: Partial<OidcClientConfig>) => setConfig({ ...UNCONFIGURED, ...body }))
-      .catch(() => {}) // SSO button just doesn't appear — email/password still works
-  }, [])
-  return config
-}
+/* The captcha plugin's refusals (server/auth.ts): no token, or a token
+   Cloudflare did not accept. */
+const CAPTCHA_CODES = new Set(['MISSING_RESPONSE', 'VERIFICATION_FAILED'])
 
 /* Admin → Sign-in can send every signed-out visitor straight to the OIDC
    provider. Not after the provider sent them back with an error (that would
@@ -201,7 +172,7 @@ function cardWantedByUrl(): boolean {
   return ssoErrorFromUrl() !== null || new URLSearchParams(location.search).has('manual')
 }
 
-function shouldAutoRedirect(config: OidcClientConfig, cardWanted: boolean): boolean {
+function shouldAutoRedirect(config: LoginConfig, cardWanted: boolean): boolean {
   return config.ssoAutoRedirect && config.enabled && !cardWanted && !isDesktopShell()
 }
 
@@ -216,10 +187,13 @@ let browserSignInNotice: string | null = null
  *  shared canvas who pressed one of the two (src/components/AccessBanner.tsx). */
 export function AuthPage({ initialMode }: { initialMode?: 'signin' | 'signup' } = {}) {
   const t = useT()
-  const oidc = useOidcConfig()
+  const oidc = useLoginConfig()
   /* better-auth lands password-reset links on /auth/reset?token=… */
   const resetToken = location.pathname === '/auth/reset' ? new URLSearchParams(location.search).get('token') : null
-  const [mode, setMode] = useState<AuthMode>(resetToken ? 'reset' : (initialMode ?? 'signin'))
+  const [requestedMode, setMode] = useState<AuthMode>(resetToken ? 'reset' : (initialMode ?? 'signin'))
+  /* Admin → Sign-in turned email sign-up off: the form is the sign-in form,
+     whether the URL, a guest's banner or a stale link asked for sign-up */
+  const mode: AuthMode = requestedMode === 'signup' && !oidc.emailPasswordSignup ? 'signin' : requestedMode
   const [name, setNameField] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -236,6 +210,11 @@ export function AuthPage({ initialMode }: { initialMode?: 'signin' | 'signup' } 
      email, or signup with an existing one */
   const [suggestMode, setSuggestMode] = useState<'signin' | 'signup' | null>(null)
   const [busy, setBusy] = useState(false)
+  /* Turnstile: a token is good for one call, so every attempt remounts the
+     widget (captchaRound) for a fresh one */
+  const needsCaptcha = !!oidc.turnstileSiteKey && mode !== 'reset'
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
+  const [captchaRound, setCaptchaRound] = useState(0)
 
   function switchMode(next: AuthMode) {
     setMode(next)
@@ -325,10 +304,19 @@ export function AuthPage({ initialMode }: { initialMode?: 'signin' | 'signup' } 
     setNotice(null)
     setSuggestMode(null)
     setUnverified(false)
+    if (needsCaptcha && !captchaToken) {
+      setError(t('auth.captchaFailed'))
+      return
+    }
+    const fetchOptions = needsCaptcha && captchaToken ? { headers: { 'x-captcha-response': captchaToken } } : undefined
     setBusy(true)
     try {
       if (mode === 'forgot') {
-        await authClient.requestPasswordReset({ email, redirectTo: '/auth/reset' })
+        const res = await authClient.requestPasswordReset({ email, redirectTo: '/auth/reset', fetchOptions })
+        if (res.error && CAPTCHA_CODES.has(authErrorCode(res.error))) {
+          setError(t('auth.captchaFailed'))
+          return
+        }
         /* same response either way — this must not confirm account existence */
         setNotice(t('auth.resetLinkSent'))
         return
@@ -352,14 +340,17 @@ export function AuthPage({ initialMode }: { initialMode?: 'signin' | 'signup' } 
               email,
               password,
               callbackURL: verifiedLanding(),
+              fetchOptions,
             })
-          : await authClient.signIn.email({ email, password })
+          : await authClient.signIn.email({ email, password, fetchOptions })
       if (res.error) {
         /* authErrorCode, not res.error.code: only our own API sends a string
            code, and matching whatever the platform sent instead must not
            throw in here — see src/lib/authError.ts */
         const code = authErrorCode(res.error)
-        if (mode === 'signin' && code === 'EMAIL_NOT_VERIFIED') {
+        if (CAPTCHA_CODES.has(code)) {
+          setError(t('auth.captchaFailed'))
+        } else if (mode === 'signin' && code === 'EMAIL_NOT_VERIFIED') {
           setError(t('auth.emailNotVerified'))
           setUnverified(true)
         } else if (mode === 'signin' && !(await accountExists(email))) {
@@ -395,6 +386,7 @@ export function AuthPage({ initialMode }: { initialMode?: 'signin' | 'signup' } 
       setError(t(NETWORK_ERROR))
     } finally {
       setBusy(false)
+      if (needsCaptcha) setCaptchaRound((round) => round + 1)
     }
   }
 
@@ -579,7 +571,22 @@ export function AuthPage({ initialMode }: { initialMode?: 'signin' | 'signup' } 
             )}
           </Callout>
         )}
-        <Button variant="primary" size="lg" block className="mt-2" type="submit" disabled={busy}>
+        {needsCaptcha && oidc.turnstileSiteKey && (
+          <Turnstile
+            key={captchaRound}
+            siteKey={oidc.turnstileSiteKey}
+            onToken={setCaptchaToken}
+            onLoadError={() => setError(t('auth.captchaUnavailable'))}
+          />
+        )}
+        <Button
+          variant="primary"
+          size="lg"
+          block
+          className="mt-2"
+          type="submit"
+          disabled={busy || (needsCaptcha && !captchaToken)}
+        >
           {busy
             ? '…'
             : mode === 'signin'

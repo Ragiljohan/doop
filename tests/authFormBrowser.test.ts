@@ -10,6 +10,8 @@ declare global {
     rejections: string[]
     /** every SSO start the page made (the body of POST /api/auth/sign-in/oauth2) */
     oauthStarts: { providerId: string }[]
+    /** every email sign-in the page sent, with its x-captcha-response header */
+    signIns: { captcha: string | null }[]
   }
 }
 
@@ -138,6 +140,40 @@ describe.skipIf(!findBrowserPath())('sign-in policy', { timeout: 30_000 }, () =>
     const labels = await buttonLabels()
     expect(labels).toContain('Sign in')
     expect(labels).not.toContain('No account yet? Sign up')
+  })
+
+  it('opens sign-in, not sign-up, when a guest asks for sign-up and it is off', async () => {
+    await open({ emailPasswordSignup: false }, '&mode=signup')
+    expect(await page.$('input[autocomplete="name"]')).toBeNull()
+    expect(await page.$('input[autocomplete="current-password"]')).not.toBeNull()
+    expect(await buttonLabels()).not.toContain('No account yet? Sign up')
+  })
+
+  it('still opens sign-up for a guest who asks while it is on', async () => {
+    await open({}, '&mode=signup')
+    await page.waitForSelector('input[autocomplete="name"]')
+  })
+
+  it('sends a Turnstile token with every sign-in, a fresh one each time', async () => {
+    await open({ turnstileSiteKey: 'site-key' }, '&turnstile=1')
+    await page.locator('input[autocomplete="email"]').click()
+    await page.keyboard.type('someone@example.test')
+    await page.locator('input[autocomplete="current-password"]').click()
+    await page.keyboard.type('password12345')
+
+    const submit = async () => {
+      await page.waitForFunction(() => {
+        const button = document.querySelector<HTMLButtonElement>('button[type="submit"]')
+        return !!button && !button.disabled
+      })
+      await page.locator('button[type="submit"]').click()
+    }
+    await submit()
+    await page.waitForSelector('[data-slot="callout"]')
+    expect(await page.$eval('[data-slot="callout"]', (el) => el.textContent)).toContain('security check')
+    await submit()
+    await page.waitForFunction(() => window.signIns.length === 2)
+    expect(await page.evaluate(() => window.signIns.map((s) => s.captcha))).toEqual(['token-1', 'token-2'])
   })
 
   it('goes straight to the provider when the policy says so', async () => {

@@ -31,7 +31,7 @@ import {
   barPrimaryCompactBtn,
 } from '../components/TopBar'
 import { LivePresence } from '../components/LivePresence'
-import { ensureTab, openExternal } from '../lib/desktop'
+import { ensureTab } from '../lib/desktop'
 import { Stage } from '../components/Stage'
 import { COMPONENT_DRAG_TYPE, dropComponent } from '../lib/components'
 import { Inspector } from '../components/Inspector'
@@ -598,10 +598,6 @@ export function CanvasPage({
       openAgent,
       openShortcuts: () => setShortcutsOpen(true),
       goToFiles: () => navigate('/'),
-      openDocs: () => {
-        /* the desktop shell drops window.open, so it hands the page to the system browser */
-        if (!openExternal(`${location.origin}/docs`)) window.open('/docs', '_blank', 'noopener,noreferrer')
-      },
       contactSupport: () => void openSupportChat(),
       openFind: (mode) => setFind((open) => (open === 'replace' ? open : mode)),
       findStep: (dir) => {

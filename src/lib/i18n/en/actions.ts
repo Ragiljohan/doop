@@ -140,7 +140,6 @@ export const actions = {
 
   /* Help */
   keyboardShortcuts: 'Keyboard shortcuts',
-  docs: 'Docs',
   customerSupport: 'Customer support',
   shortcutsSearch: 'Search shortcuts',
   shortcutsEmpty: 'No shortcut matches “{query}”',

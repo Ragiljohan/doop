@@ -226,9 +226,13 @@ license notices in the source are kept.
 
 Upstream project: ${brand.links.upstream}
 Source for this modified version: ${brand.links.source}
-
+${
+  brand.showSourceLink === false
+    ? ''
+    : `
 Network users can reach that source from the Source link in the app.
 `
+}`
 }
 
 const brand = loadBrand()

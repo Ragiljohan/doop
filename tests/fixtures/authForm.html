@@ -47,6 +47,24 @@
       if (loginOverride) Object.assign(loginConfig, JSON.parse(loginOverride))
       /* every SSO start the page made; the "provider" is this page's #idp */
       window.oauthStarts = []
+      /* every email sign-in the page sent, with the Turnstile token it carried;
+         each is refused as the captcha plugin refuses a token it rejects */
+      window.signIns = []
+      /* ?turnstile=1 stands in for Cloudflare's script: every widget solves
+         itself at once with a numbered token */
+      if (new URLSearchParams(location.search).has('turnstile')) {
+        var widgets = 0
+        window.turnstile = {
+          render: function (el, options) {
+            var id = 'w' + ++widgets
+            setTimeout(function () {
+              options.callback('token-' + widgets)
+            })
+            return id
+          },
+          remove: function () {},
+        }
+      }
       var realFetch = window.fetch.bind(window)
       function jsonResponse(body, status) {
         return new Response(JSON.stringify(body), { status: status, headers: { 'content-type': 'application/json' } })
@@ -57,6 +75,13 @@
         if (url.includes('/api/oidc-config')) return Promise.resolve(jsonResponse(loginConfig, 200))
         if (url.includes('/api/auth/sign-up/email'))
           return Promise.resolve(jsonResponse(signUpResponse.body, signUpResponse.status))
+        if (url.includes('/api/auth/sign-in/email')) {
+          var headers = new Headers(input instanceof Request ? input.headers : init && init.headers)
+          window.signIns.push({ captcha: headers.get('x-captcha-response') })
+          return Promise.resolve(
+            jsonResponse({ code: 'VERIFICATION_FAILED', message: 'Captcha verification failed' }, 403),
+          )
+        }
         if (url.includes('/api/auth/sign-in/oauth2')) {
           window.oauthStarts.push(JSON.parse(init.body))
           return Promise.resolve(
@@ -72,7 +97,9 @@
       import { AuthPage } from '/src/pages/AuthPage.tsx'
       import '/src/styles.css'
 
-      createRoot(document.getElementById('root')).render(React.createElement(AuthPage))
+      /* ?mode=signup: a guest on a shared canvas pressed Sign up */
+      const initialMode = new URLSearchParams(location.search).get('mode') || undefined
+      createRoot(document.getElementById('root')).render(React.createElement(AuthPage, { initialMode }))
     </script>
   </body>
 </html>

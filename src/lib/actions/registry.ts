@@ -56,6 +56,7 @@ import {
   ungroupSelection,
 } from './edits'
 import { promptMakeComponent } from '../components'
+import { supportChatConfigured } from '../supportChat'
 
 /** What the canvas page lends the registry: its own modals and panels. */
 export interface ActionHost {
@@ -71,7 +72,6 @@ export interface ActionHost {
   openShortcuts(): void
   /** leave the canvas for the list of canvases */
   goToFiles(): void
-  openDocs(): void
   contactSupport(): void
   openFind(mode: 'find' | 'replace'): void
   findStep(dir: 1 | -1): void
@@ -1049,20 +1049,18 @@ export const ACTIONS: readonly CanvasAction[] = [
     keys: [{ code: 'Slash', ctrl: true, shift: true }],
     run: () => h()?.openShortcuts(),
   },
-  {
-    id: 'docs',
-    label: 'actions.docs',
-    menu: 'help',
-    section: 1,
-    run: () => h()?.openDocs(),
-  },
-  {
-    id: 'customer-support',
-    label: 'actions.customerSupport',
-    menu: 'help',
-    section: 1,
-    run: () => h()?.contactSupport(),
-  },
+  /* no docs entry: this build ships no /docs; support only where the chat exists */
+  ...(supportChatConfigured
+    ? [
+        {
+          id: 'customer-support',
+          label: 'actions.customerSupport',
+          menu: 'help',
+          section: 1,
+          run: () => h()?.contactSupport(),
+        } satisfies CanvasAction,
+      ]
+    : []),
 ]
 
 /** Whether the action can run now: the canvas is open and editable when it

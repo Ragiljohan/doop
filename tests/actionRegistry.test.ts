@@ -44,7 +44,6 @@ function stubHost(): ActionHost {
     openAgent: vi.fn(),
     openShortcuts: vi.fn(),
     goToFiles: vi.fn(),
-    openDocs: vi.fn(),
     contactSupport: vi.fn(),
     openFind: vi.fn(),
     findStep: vi.fn(),

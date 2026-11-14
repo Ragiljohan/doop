@@ -20,6 +20,11 @@ export type BrandConfig = {
   emailFrom: string
   publicUrl: string
   footer: string
+  /** Whether the app shows a "Source" link to `links.source`. Absent counts
+   *  as on. The AGPL (section 13) asks a modified version run over a network
+   *  to offer its users the source; turning this off moves that duty
+   *  elsewhere (see NOTICE). */
+  showSourceLink?: boolean
   links: BrandLinks
 }
 
@@ -49,6 +54,7 @@ export const brand = {
   ...file,
   emailFrom: file.emailFrom || `${file.senderName} <no-reply@localhost>`,
   publicHost: hostOf(file.publicUrl),
+  showSourceLink: file.showSourceLink !== false && !!file.links.source,
   mcpSlug,
   mcpName: `${mcpSlug}-canvas`,
 }

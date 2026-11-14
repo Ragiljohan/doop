@@ -9,6 +9,7 @@ vi.mock('../src/lib/auth', () => ({
 vi.mock('../src/lib/me', () => ({ useMe: () => null }))
 vi.mock('../src/lib/shell', () => ({ isDesktopShell: () => shell.desktop }))
 import { AccountMenu } from '../src/components/DashShell'
+import { brand } from '../shared/brand'
 ;(globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true
 
 let root: Root
@@ -36,9 +37,16 @@ async function openMenu(): Promise<Map<string, string | null>> {
   return new Map(links.map((a) => [a.textContent?.trim() ?? '', a.getAttribute('href')]))
 }
 
-it('links the source from the account menu and hides empty marketing links', async () => {
+/* Source follows brand config (showSourceLink); there is no docs site to link */
+function expectSourceAndNoDocs(links: Map<string, string | null>) {
+  if (brand.showSourceLink) expect(links.get('Source')).toBe(brand.links.source)
+  else expect(links.has('Source')).toBe(false)
+  expect(links.has('Help & docs')).toBe(false)
+}
+
+it('links the source only when brand config shows it, and hides empty marketing links', async () => {
   const links = await openMenu()
-  expect(links.get('Source')).toBe('https://github.com/Ragiljohan/doop')
+  expectSourceAndNoDocs(links)
   expect(links.has('Get desktop app')).toBe(false)
   expect(links.has('Design website')).toBe(false)
 })
@@ -47,5 +55,5 @@ it('offers no download inside the desktop app', async () => {
   shell.desktop = true
   const links = await openMenu()
   expect(links.has('Get desktop app')).toBe(false)
-  expect(links.get('Source')).toBe('https://github.com/Ragiljohan/doop')
+  expectSourceAndNoDocs(links)
 })

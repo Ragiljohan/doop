@@ -625,12 +625,22 @@ app.put('/u/:token', async (req, res) => {
    An allowlist, not a blocklist: whatever endpoints a future better-auth
    plugin adds are refused by default rather than discovered later. */
 const MCP_OAUTH_PATHS = /^\/api\/auth\/(mcp\/|oauth2\/(authorize|consent|token))/
+/* The sign-up refusal matches the path the way a lenient router might read
+   it: any case, doubled or trailing slashes. */
+function isEmailSignUpPath(path: string): boolean {
+  return (
+    path
+      .toLowerCase()
+      .replace(/\/{2,}/g, '/')
+      .replace(/\/$/, '') === '/api/auth/sign-up/email'
+  )
+}
 const VIEW_AS_ALLOWED = /^\/api\/auth\/(sign-out|admin\/stop-impersonating)$/
 app.all('/api/auth/*', async (req, res, next) => {
   /* Admin → Sign-in turned email/password sign-up off: the form is hidden,
      and the call it would make is refused too. Sign-in, password resets and
      provider sign-ups go on as before. */
-  if (req.path === '/api/auth/sign-up/email' && !getInstanceSettings().emailPasswordSignup) {
+  if (isEmailSignUpPath(req.path) && !getInstanceSettings().emailPasswordSignup) {
     return res
       .status(403)
       .json({ code: 'SIGNUP_DISABLED', message: 'Sign-up with email and password is off on this instance.' })
